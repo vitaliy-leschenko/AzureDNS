@@ -1,0 +1,81 @@
+﻿<Window x:Class="AzureDNS.Views.ResourcesView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}"
+        Title="Azure DNS" Height="349" Width="773" WindowStartupLocation="CenterOwner" ShowInTaskbar="False" SnapsToDevicePixels="True">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*" MinWidth="200"/>
+            <ColumnDefinition Width="*" MinWidth="200"/>
+            <ColumnDefinition Width="4*"/>
+        </Grid.ColumnDefinitions>
+        <Grid Grid.Column="0" Margin="0,0,8,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Resource groups:" Margin="5"/>
+            <ListView Grid.Row="1" Visibility="{Binding Path=ResourceGroupsListVisibility}"
+                  ItemsSource="{Binding Path=ResourceGroups}" IsEnabled="{Binding Path=IsGroupsEnabled}"
+                  SelectedItem="{Binding Path=CurrentResourceGroupName, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+            <ProgressBar Grid.Row="1" VerticalAlignment="Top" IsIndeterminate="True" Visibility="{Binding Path=ResourceGroupsLoadingVisibility}" />
+        </Grid>
+        <GridSplitter Grid.Column="0" Width="8"/>
+        <Grid Grid.Column="1" Margin="0,0,8,0">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Zones:" Margin="5"/>
+            <ListView Grid.Row="1" Visibility="{Binding Path=ZonesListVisibility}"
+                  ItemsSource="{Binding Path=Zones}"
+                  SelectedItem="{Binding Path=CurrentZoneName, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+            <ProgressBar Grid.Row="1" VerticalAlignment="Top" IsIndeterminate="True" Visibility="{Binding Path=ZonesLoadingVisibility}" />
+        </Grid>
+        <GridSplitter Grid.Column="1" Width="8"/>
+        <Grid Grid.Column="2">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+            <TextBlock Text="Records:" Margin="5"/>
+            <ListView Grid.Row="1" Visibility="{Binding Path=RecordsListVisibility}"
+                  ItemsSource="{Binding Path=Records}"
+                  SelectedItem="{Binding Path=CurrentRecord, Mode=TwoWay}" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding}" TextTrimming="CharacterEllipsis" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+            </ListView>
+            <ProgressBar Grid.Row="1" VerticalAlignment="Top" IsIndeterminate="True" Visibility="{Binding Path=RecordsLoadingVisibility}" />
+        </Grid>
+    </Grid>
+</Window>
