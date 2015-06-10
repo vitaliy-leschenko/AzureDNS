@@ -11,7 +11,7 @@
             <Border DockPanel.Dock="Top" Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="0,0,0,1">
                 <DockPanel Margin="0,-1">
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                        <Button Content="+" Margin="0,0,-1,0" Command="{Binding Path=AddAccountCommand}" Width="24" />
+                        <Button Content="Add account" Margin="0,0,-1,0" Command="{Binding Path=AddAccountCommand}" />
                     </StackPanel>
                     <Border Padding="4,2" Height="24">
                         <TextBlock Text="Subscriptions:" VerticalAlignment="Center" />

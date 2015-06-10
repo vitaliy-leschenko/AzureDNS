@@ -8,6 +8,7 @@ using AzureDNS.Core;
 using AzureDNS.Events;
 using AzureDNS.Views;
 using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.Logging;
 using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.Unity;
 
@@ -17,6 +18,7 @@ namespace AzureDNS.ViewModels
     {
         private readonly IAzureSubscriptionView view;
         private readonly IUnityContainer container;
+        private readonly ILoggerFacade logger;
         private readonly ObservableCollection<SubscriptionViewModel> subscriptions = new ObservableCollection<SubscriptionViewModel>();
         private SubscriptionViewModel current;
         private bool isEnabled;
@@ -27,6 +29,8 @@ namespace AzureDNS.ViewModels
         {
             this.view = view;
             this.container = container;
+            logger = container.Resolve<ILoggerFacade>();
+
             view.Loaded += OnLoaded;
 
             AddAccountCommand = new DelegateCommand(OnAddAccountClick);
@@ -85,6 +89,8 @@ namespace AzureDNS.ViewModels
 
         private async Task LoadSubscriptionsAsync()
         {
+            logger.Log("Getting AzureSubscription...", Category.Info, Priority.Low);
+
             try
             {
                 Loading = true;

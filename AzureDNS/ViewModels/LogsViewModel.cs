@@ -38,6 +38,8 @@ namespace AzureDNS.ViewModels
         {
             var aggregator = container.Resolve<IEventAggregator>();
             aggregator.GetEvent<LogEvent>().Subscribe(OnLogEvent, ThreadOption.UIThread);
+
+            container.RegisterInstance(new LogViewer());
         }
 
         private void OnLogEvent(LogMessage item)

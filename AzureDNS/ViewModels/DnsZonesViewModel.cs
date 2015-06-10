@@ -6,6 +6,7 @@ using AzureDNS.Common;
 using AzureDNS.Core;
 using AzureDNS.Events;
 using AzureDNS.Views;
+using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Logging;
 using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.Unity;
@@ -23,6 +24,8 @@ namespace AzureDNS.ViewModels
 
         private bool isEnabled = true;
         private bool loading = false;
+        private DelegateCommand addZoneCommand;
+        private string currentSubscription;
 
         public DnsZonesViewModel(IDnsZonesView view, IUnityContainer container)
         {
@@ -33,6 +36,8 @@ namespace AzureDNS.ViewModels
 
             view.Loaded += OnLoaded;
             view.Unloaded += OnUnloaded;
+
+            AddZoneCommand = new DelegateCommand(OnAddZoneClick, () => !string.IsNullOrEmpty(currentSubscription));
         }
 
         public bool IsEnabled
@@ -71,6 +76,16 @@ namespace AzureDNS.ViewModels
             }
         }
 
+        public DelegateCommand AddZoneCommand
+        {
+            get { return addZoneCommand; }
+            set
+            {
+                addZoneCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             eventAggregator.GetEvent<AzureSubscriptionChangedEvent>().Subscribe(OnAzureSubscriptionChange, ThreadOption.UIThread);
@@ -81,8 +96,10 @@ namespace AzureDNS.ViewModels
             eventAggregator.GetEvent<AzureSubscriptionChangedEvent>().Unsubscribe(OnAzureSubscriptionChange);
         }
 
-        private async void OnAzureSubscriptionChange(string obj)
+        private async void OnAzureSubscriptionChange(string subscription)
         {
+            currentSubscription = subscription;
+            AddZoneCommand.RaiseCanExecuteChanged();
             await LoadDnsZonesAsync();
         }
 
@@ -118,6 +135,9 @@ namespace AzureDNS.ViewModels
                 Loading = false;
                 IsEnabled = true;
             }
+        }
+        private void OnAddZoneClick()
+        {
         }
     }
 }

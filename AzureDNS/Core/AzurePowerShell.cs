@@ -5,6 +5,7 @@ using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Threading.Tasks;
 using AzureDNS.ViewModels;
+using Microsoft.Practices.Prism.Logging;
 using Microsoft.Practices.Unity;
 
 namespace AzureDNS.Core
@@ -12,11 +13,13 @@ namespace AzureDNS.Core
     public class AzurePowerShell
     {
         private readonly Runspace runspace;
+        private readonly ILoggerFacade logger;
         private readonly IUnityContainer container;
 
-        public AzurePowerShell(Runspace runspace, IUnityContainer container)
+        public AzurePowerShell(Runspace runspace, ILoggerFacade logger, IUnityContainer container)
         {
             this.runspace = runspace;
+            this.logger = logger;
             this.container = container;
         }
 
@@ -151,10 +154,13 @@ namespace AzureDNS.Core
             return await Task.Run(
                 delegate
                 {
-                    var ps = PowerShell.Create();
-                    ps.Runspace = runspace;
-                    var result = ps.AddCommand("Add-AzureAccount").Invoke();
-                    return result.Count != 0;
+                    lock (runspace)
+                    {
+                        var ps = PowerShell.Create();
+                        ps.Runspace = runspace;
+                        var result = ps.AddCommand("Add-AzureAccount").Invoke();
+                        return result.Count != 0;
+                    }
                 });
         }
 

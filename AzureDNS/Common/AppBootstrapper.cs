@@ -17,7 +17,7 @@ namespace AzureDNS.Common
 
         public AppBootstrapper(App app)
         {
-            container = new UnityContainer().RegisterInstance<IEventAggregator>(new EventAggregator());
+            container = new UnityContainer();
         }
 
         protected override IUnityContainer CreateContainer()
