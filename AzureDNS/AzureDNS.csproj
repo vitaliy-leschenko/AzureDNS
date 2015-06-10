@@ -140,13 +140,12 @@
     <Compile Include="Core\SoaDnsRecord.cs" />
     <Compile Include="Core\SrvDnsRecord.cs" />
     <Compile Include="Core\TxtDnsRecord.cs" />
+    <Compile Include="ViewModels\AzureSubscriptionViewModel.cs" />
     <Compile Include="ViewModels\DnsRecordsViewModel.cs" />
     <Compile Include="ViewModels\DnsRecordViewModel.cs" />
     <Compile Include="ViewModels\DnsZonesViewModel.cs" />
     <Compile Include="ViewModels\DnsZoneViewModel.cs" />
     <Compile Include="ViewModels\LogsViewModel.cs" />
-    <Compile Include="ViewModels\MainPageViewModel.cs" />
-    <Compile Include="ViewModels\SubscriptionsViewModel.cs" />
     <Page Include="Resources\Brushes.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -183,6 +182,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\AzureSubscriptionView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\DnsRecordsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -199,10 +202,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\SubscriptionsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -210,12 +209,16 @@
     <Compile Include="Common\AppBootstrapper.cs" />
     <Compile Include="Common\AppLogger.cs" />
     <Compile Include="ViewModels\SubscriptionViewModel.cs" />
+    <Compile Include="Views\AzureSubscriptionView.xaml.cs">
+      <DependentUpon>AzureSubscriptionView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\DnsRecordsView.xaml.cs">
       <DependentUpon>DnsRecordsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\DnsZonesView.xaml.cs">
       <DependentUpon>DnsZonesView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\IAzureSubscriptionView.cs" />
     <Compile Include="Views\IBaseView.cs" />
     <Compile Include="Views\IDnsRecordsView.cs" />
     <Compile Include="Views\IDnsZonesView.cs" />
@@ -226,10 +229,6 @@
     </Compile>
     <Compile Include="Views\MainPageView.xaml.cs">
       <DependentUpon>MainPageView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\SubscriptionsView.xaml.cs">
-      <DependentUpon>SubscriptionsView.xaml</DependentUpon>
-      <SubType>Code</SubType>
     </Compile>
   </ItemGroup>
   <ItemGroup>

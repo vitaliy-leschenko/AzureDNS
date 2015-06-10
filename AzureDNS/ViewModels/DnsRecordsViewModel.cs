@@ -62,6 +62,26 @@ namespace AzureDNS.ViewModels
             }
         }
 
+        public bool Loading
+        {
+            get { return loading; }
+            set
+            {
+                loading = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public bool IsEnabled
+        {
+            get { return isEnabled; }
+            set
+            {
+                isEnabled = value;
+                OnPropertyChanged();
+            }
+        }
+
         public DnsRecordsViewModel(IDnsRecordsView view, IUnityContainer container)
         {
             this.container = container;
@@ -132,26 +152,6 @@ namespace AzureDNS.ViewModels
 
                 Loading = false;
                 IsEnabled = true;
-            }
-        }
-
-        public bool Loading
-        {
-            get { return loading; }
-            set
-            {
-                loading = value;
-                OnPropertyChanged();
-            }
-        }
-
-        public bool IsEnabled
-        {
-            get { return isEnabled; }
-            set
-            {
-                isEnabled = value;
-                OnPropertyChanged();
             }
         }
     }

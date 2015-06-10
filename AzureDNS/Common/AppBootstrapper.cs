@@ -33,8 +33,12 @@ namespace AzureDNS.Common
 
         protected override DependencyObject CreateShell()
         {
+            var ps = container.Resolve<AzurePowerShell>();
+            ps.InitializeAzureResourceManager();
+
             var manager = Container.Resolve<IRegionManager>();
             manager.RegisterViewWithRegion("Logs", () => Container.Resolve<LogsView>());
+            manager.RegisterViewWithRegion("Subscriptions", () => Container.Resolve<AzureSubscriptionView>());
             manager.RegisterViewWithRegion("DnsZones", () => Container.Resolve<DnsZonesView>());
             manager.RegisterViewWithRegion("DnsRecords", () => Container.Resolve<DnsRecordsView>());
 

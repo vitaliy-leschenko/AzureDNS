@@ -146,28 +146,25 @@ namespace AzureDNS.Core
                 });
         }
 
-        public bool AddAzureAccount()
+        public async Task<bool> AddAzureAccount()
+        {
+            return await Task.Run(
+                delegate
+                {
+                    var ps = PowerShell.Create();
+                    ps.Runspace = runspace;
+                    var result = ps.AddCommand("Add-AzureAccount").Invoke();
+                    return result.Count != 0;
+                });
+        }
+
+        public void InitializeAzureResourceManager()
         {
             var ps = PowerShell.Create();
             ps.Runspace = runspace;
-            var result = ps.AddCommand("Add-AzureAccount").Invoke();
-            return result.Count != 0;
-        }
-
-        public async Task InitializeAzureResourceManager()
-        {
-            await Task.Run(
-                delegate
-                {
-                    lock (runspace)
-                    {
-                        var ps = PowerShell.Create();
-                        ps.Runspace = runspace;
-                        ps.AddCommand("Switch-AzureMode")
-                            .AddParameter("Name", "AzureResourceManager")
-                            .Invoke();
-                    }
-                });
+            ps.AddCommand("Switch-AzureMode")
+                .AddParameter("Name", "AzureResourceManager")
+                .Invoke();
         }
     }
 }

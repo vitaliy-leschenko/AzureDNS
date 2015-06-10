@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Threading.Tasks;
 using System.Windows;
 using AzureDNS.Common;
@@ -95,12 +96,27 @@ namespace AzureDNS.ViewModels
         {
             logger.Log("Getting AzureDnsZones...", Category.Info, Priority.Low);
 
-            var ps = container.Resolve<AzurePowerShell>();
-            var items = await ps.GetAzureDnsZoneAsync();
-            Zones.Clear();
-            foreach (var item in items)
+            try
             {
-                Zones.Add(item);
+                Loading = true;
+                IsEnabled = false;
+
+                var ps = container.Resolve<AzurePowerShell>();
+                var items = await ps.GetAzureDnsZoneAsync();
+                Zones.Clear();
+                foreach (var item in items)
+                {
+                    Zones.Add(item);
+                }
+            }
+            catch (Exception ex)
+            {
+                logger.Log(ex.Message, Category.Exception, Priority.High);
+            }
+            finally
+            {
+                Loading = false;
+                IsEnabled = true;
             }
         }
     }
