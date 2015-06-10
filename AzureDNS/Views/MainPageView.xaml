@@ -49,7 +49,19 @@
 
             <Border Grid.Column="1" Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="1,1,0,0" Margin="2,0,0,0"/>
             <DockPanel Grid.Column="1" Margin="3,1,0,0">
-                
+                <Border DockPanel.Dock="Top" Background="{StaticResource TitleBrush}" Padding="4,2" Height="24">
+                    <TextBlock Text="Records:" VerticalAlignment="Center" />
+                </Border>
+                <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                          ItemsSource="{Binding Path=Records}">
+                    <ListView.View>
+                        <GridView>
+                            <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=Name}" Width="Auto" />
+                            <GridViewColumn Header="Type" DisplayMemberBinding="{Binding Path=RecordType}" Width="Auto" />
+                            <GridViewColumn Header="Value" DisplayMemberBinding="{Binding Path=RecordsValue}" />
+                        </GridView>
+                    </ListView.View>
+                </ListView>
             </DockPanel>
         </Grid>
     </Grid>
