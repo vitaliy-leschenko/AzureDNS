@@ -1,0 +1,144 @@
+﻿<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" 
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+    <LinearGradientBrush x:Key="SeparatorColor" EndPoint="1,0.5" StartPoint="0,0.5">
+        <GradientStop Color="#FFFFFFFF" Offset="0"/>
+        <GradientStop Color="#FF666666" Offset="1"/>
+    </LinearGradientBrush>
+
+    <SolidColorBrush x:Key="DisabledBackgroundColor" Color="#EEE"/>
+
+    <SolidColorBrush x:Key="ContextMenuBorderColor" Color="#FF666666"/>
+    <SolidColorBrush x:Key="ContextMenuBackgroundColor" Color="#FFf9f8f7"/>
+
+    <LinearGradientBrush x:Key="MenuItemImageColor" EndPoint="1,0.5" StartPoint="0,0.5">
+        <GradientStop Color="#FFf4f3f1" Offset="0"/>
+        <GradientStop Color="#FFd5d2ca" Offset="1"/>
+    </LinearGradientBrush>
+
+    <SolidColorBrush x:Key="MenuItemTextColor" Color="#000"/>
+    <SolidColorBrush x:Key="MenuItemHoverBorderColor" Color="#FF0a246a"/>
+    <SolidColorBrush x:Key="MenuItemHoverTextColor" Color="#FF000000"/>
+    <SolidColorBrush x:Key="MenuItemHoverColor" Color="#FFb8bfd3"/>
+
+    <Style TargetType="{x:Type ContextMenu}">
+        <Setter Property="BorderThickness" Value="0" />
+        <Setter Property="Background" Value="{StaticResource ContextMenuBackgroundColor}" />
+        <Setter Property="Padding" Value="0" />
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type ContextMenu}">
+                    <Border x:Name="Border" Background="{StaticResource ContextMenuBorderColor}">
+                        <StackPanel Margin="1" 
+                                                Background="{TemplateBinding Background}" 
+                                                IsItemsHost="True" ClipToBounds="True"/>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type Separator}" x:Key="separator">
+        <Setter Property="Height" Value="3"/>
+        <Setter Property="Margin" Value="0,0,0,0"/>
+        <Setter Property="Focusable" Value="false"/>
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type Separator}">
+                    <Border HorizontalAlignment="Stretch" x:Name="Root" >
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="24" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border HorizontalAlignment="Stretch"
+                                VerticalAlignment="Stretch"
+                                x:Name="ImageWrapper"
+                                Background="{StaticResource MenuItemImageColor}" />
+                            <Border Background="{DynamicResource SeparatorColor}" 
+                                Margin="5,0,0,0"
+                                Grid.Column="1" Height="1" />
+                        </Grid>
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <Style TargetType="{x:Type MenuItem}">
+        <Setter Property="Foreground" Value="{StaticResource MenuItemTextColor}" />
+        <Setter Property="SnapsToDevicePixels" Value="True"/>
+        <Setter Property="MenuItem.Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="{x:Type MenuItem}">
+                    <Grid HorizontalAlignment="Stretch" >
+                        <DockPanel x:Name="MainWrapper" Height="24" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+                            <Border Width="24" DockPanel.Dock="Left" VerticalAlignment="Stretch" Background="{StaticResource MenuItemImageColor}" />
+                            <Border Background="{StaticResource ContextMenuBackgroundColor}" VerticalAlignment="Stretch" />
+                        </DockPanel>
+
+                        <Border HorizontalAlignment="Stretch" VerticalAlignment="Stretch" 
+                                        BorderThickness="1,1,1,1" Margin="1,1,1,1" 
+                                        CornerRadius="3"
+                                        x:Name="ItemWrapper" />
+
+                        <DockPanel Height="24">
+                            <Border Width="24" x:Name="Icon" DockPanel.Dock="Left" VerticalAlignment="Stretch">
+                                <ContentPresenter VerticalAlignment="Center" ContentSource="Icon"/>
+                            </Border>
+
+                            <Border Width="10" x:Name="Arrow" DockPanel.Dock="Right" VerticalAlignment="Stretch">
+                                <Path VerticalAlignment="Center" HorizontalAlignment="Left" 
+                                    Fill="{StaticResource MenuItemTextColor}" Data="M0,0 L0,8 L4,4 z"/>
+                            </Border>
+
+                            <TextBlock DockPanel.Dock="Right" x:Name="Shortkey" Text="{TemplateBinding MenuItem.InputGestureText}" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" Margin="0,0,10,0" />
+
+                            <TextBlock Text="{TemplateBinding MenuItem.Header}" x:Name="Name" Foreground="{TemplateBinding Foreground}" VerticalAlignment="Center" Margin="10,0,20,0" />
+                        </DockPanel>
+                        <Popup IsOpen="{Binding Path=IsSubmenuOpen, RelativeSource={RelativeSource TemplatedParent}}" Placement="Right" x:Name="SubMenuPopup" Focusable="false" AllowsTransparency="true" SnapsToDevicePixels="true" PopupAnimation="{DynamicResource {x:Static SystemParameters.MenuPopupAnimationKey}}" VerticalOffset="-1" HorizontalOffset="0">
+                            <Grid x:Name="SubMenu" SnapsToDevicePixels="true" >
+                                <Border x:Name="SubMenuBorder" SnapsToDevicePixels="true" Background="{StaticResource ContextMenuBorderColor}">
+                                    <StackPanel Margin="1" Background="{StaticResource ContextMenuBackgroundColor}" SnapsToDevicePixels="true" IsItemsHost="True" ClipToBounds="True"/>
+                                </Border>
+                            </Grid>
+                        </Popup>
+                    </Grid>
+                    <ControlTemplate.Triggers>
+                        <Trigger Property="IsEnabled" Value="false">
+                            <Setter Property="Opacity" TargetName="Icon" Value="0.7" />
+                            <Setter Property="Foreground" Value="#999" />
+                            <Setter Property="Focusable" Value="False" />
+                        </Trigger>
+                        <Trigger Property="Role" Value="SubmenuItem">
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="Arrow"/>
+                        </Trigger>
+                        <Trigger Property="Role" Value="TopLevelHeader">
+                            <Setter Property="Visibility" Value="Hidden" TargetName="MainWrapper"/>
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="Arrow"/>
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="Icon"/>
+                            <Setter Property="Visibility" Value="Collapsed" TargetName="Shortkey"/>
+
+                            <Setter Property="Margin" Value="5,0,5,0" TargetName="Name"/>
+
+                            <Setter Property="Placement" Value="Bottom" TargetName="SubMenuPopup"/>
+                            <Setter Property="VerticalOffset" Value="0" TargetName="SubMenuPopup"/>
+                            <Setter Property="HorizontalOffset" Value="1" TargetName="SubMenuPopup"/>
+
+                            <Setter Property="CornerRadius" Value="0" TargetName="ItemWrapper"/>
+                        </Trigger>
+                        <Trigger Property="IsHighlighted" Value="true">
+                            <Trigger.Setters>
+                                <Setter Property="Background" TargetName="ItemWrapper" Value="{StaticResource MenuItemHoverColor}" />
+                                <Setter Property="BorderBrush" TargetName="ItemWrapper" Value="{StaticResource MenuItemHoverBorderColor}" />
+
+                                <Setter Property="Foreground" Value="{StaticResource MenuItemHoverTextColor}" />
+                            </Trigger.Setters>
+                        </Trigger>
+                    </ControlTemplate.Triggers>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>

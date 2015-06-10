@@ -3,19 +3,21 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
-using System.Threading;
 using System.Threading.Tasks;
 using AzureDNS.ViewModels;
+using Microsoft.Practices.Unity;
 
-namespace AzureDNS.Common
+namespace AzureDNS.Core
 {
     public class AzurePowerShell
     {
         private readonly Runspace runspace;
+        private readonly IUnityContainer container;
 
-        public AzurePowerShell(Runspace runspace)
+        public AzurePowerShell(Runspace runspace, IUnityContainer container)
         {
             this.runspace = runspace;
+            this.container = container;
         }
 
 
@@ -45,14 +47,17 @@ namespace AzureDNS.Common
                     {
                         var ps = PowerShell.Create();
                         ps.Runspace = runspace;
-                        var items = ps.AddCommand("Get-AzureSubscription").Invoke<dynamic>().ToList();
+                        var items = ps.AddCommand("Get-AzureSubscription").Invoke().ToList();
 
                         var result = new List<SubscriptionViewModel>();
-                        foreach (var item in items)
+                        foreach (var o in items)
                         {
+                            dynamic item = o.BaseObject;
+
                             var subscription = new SubscriptionViewModel();
                             subscription.SubscriptionId = new Guid((string)item.SubscriptionId);
                             subscription.SubscriptionName = item.SubscriptionName;
+                            subscription.IsCurrent = item.IsCurrent;
 
                             result.Add(subscription);
                         }
@@ -62,46 +67,39 @@ namespace AzureDNS.Common
                 });
         }
 
-        public async Task<IList<string>> GetAzureResourceGroupAsync()
+        public async Task<IList<DnsZoneViewModel>> GetAzureDnsZoneAsync()
         {
             return await Task.Run(
                 delegate
                 {
                     lock (runspace)
                     {
-                        var ps = PowerShell.Create();
-                        ps.Runspace = runspace;
-                        var items = ps.AddCommand("Get-AzureResourceGroup").Invoke<dynamic>();
-                        return items.Select(item => item.ResourceGroupName).Cast<string>().ToList();
+                        var pipe = runspace.CreatePipeline();
+                        pipe.Commands.Add(new Command("Get-AzureResourceGroup"));
+                        pipe.Commands.Add(new Command("Get-AzureDnsZone"));
+
+                        var result = pipe.Invoke();
+                        var list = new List<DnsZoneViewModel>();
+
+                        foreach (var o in result)
+                        {
+                            dynamic zoneList = o.BaseObject;
+                            foreach (var item in zoneList)
+                            {
+                                var zone = new DnsZoneViewModel();
+                                zone.Name = item.Name;
+                                zone.ResourceGroupName = item.ResourceGroupName;
+
+                                list.Add(zone);
+                            }
+                        }
+
+                        return list;
                     }
                 });
         }
 
-        public async Task<IList<string>> GetAzureDnsZoneAsync(string resourceGroupName)
-        {
-            return await Task.Run(
-                delegate
-                {
-                    lock (runspace)
-                    {
-                        try
-                        {
-                            var ps = PowerShell.Create();
-                            ps.Runspace = runspace;
-                            var items = ps.AddCommand("Get-AzureDnsZone")
-                                .AddParameter("ResourceGroupName", resourceGroupName)
-                                .Invoke();
-                            return items.Select(item => ((dynamic)item).Name).Cast<string>().ToList();
-                        }
-                        catch (Exception)
-                        {
-                            return new List<string>();
-                        }
-                    }
-                });
-        }
-
-        public async Task<IList<DnsRecordViewModel>> GetAzureDnsRecordsAsync(string resourceGroupName, string zoneName)
+        public async Task<IList<DnsRecordViewModel>> GetAzureDnsRecordsAsync(DnsZoneViewModel zone)
         {
             return await Task.Run(
                 delegate
@@ -113,8 +111,8 @@ namespace AzureDNS.Common
                             var ps = PowerShell.Create();
                             ps.Runspace = runspace;
                             var items = ps.AddCommand("Get-AzureDnsRecordSet")
-                                .AddParameter("ResourceGroupName", resourceGroupName)
-                                .AddParameter("ZoneName", zoneName)
+                                .AddParameter("ResourceGroupName", zone.ResourceGroupName)
+                                .AddParameter("ZoneName", zone.Name)
                                 .Invoke();
 
                             dynamic records = items[0].BaseObject;
@@ -126,10 +124,12 @@ namespace AzureDNS.Common
                                 record.Name = item.Name;
                                 record.RecordType = item.RecordType.ToString();
 
-                                var list = new List<object>();
+                                var reader = container.Resolve<IDnsRecordReader>(record.RecordType);
+
+                                var list = new List<BaseDnsRecord>();
                                 foreach (var r in item.Records)
                                 {
-                                    list.Add(r);
+                                    list.Add(reader.Read(r));
                                 }
                                 record.Records = list;
 
@@ -153,13 +153,20 @@ namespace AzureDNS.Common
             return result.Count != 0;
         }
 
-        public void InitializeAzureResourceManager()
+        public async Task InitializeAzureResourceManager()
         {
-            var ps = PowerShell.Create();
-            ps.Runspace = runspace;
-            ps.AddCommand("Switch-AzureMode")
-                .AddParameter("Name", "AzureResourceManager")
-                .Invoke();
+            await Task.Run(
+                delegate
+                {
+                    lock (runspace)
+                    {
+                        var ps = PowerShell.Create();
+                        ps.Runspace = runspace;
+                        ps.AddCommand("Switch-AzureMode")
+                            .AddParameter("Name", "AzureResourceManager")
+                            .Invoke();
+                    }
+                });
         }
     }
 }

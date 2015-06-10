@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Windows;
 using AzureDNS.Common;
+using AzureDNS.Core;
 using AzureDNS.Views;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Unity;
@@ -10,7 +11,7 @@ namespace AzureDNS.ViewModels
 {
     public class SubscriptionsViewModel : BaseViewModel
     {
-        private readonly IUnityContainer container;
+        private readonly ISubscriptionsView view;
         private readonly AzurePowerShell shell;
         private Visibility listVisibility = Visibility.Visible;
         private Visibility loadingVisibility = Visibility.Collapsed;
@@ -64,26 +65,27 @@ namespace AzureDNS.ViewModels
             get { return subscriptions; }
         }
 
-        public SubscriptionsViewModel(IUnityContainer container)
+        public SubscriptionsViewModel(AzurePowerShell shell, ISubscriptionsView view)
         {
-            this.container = container;
-            shell = container.Resolve<AzurePowerShell>();
+            this.view = view;
+            this.shell = shell;
 
             SelectCommand = new DelegateCommand(OnSelectClick, () => Current != null);
-            LoadData();
+            view.Loaded += OnLoaded;
         }
 
         public DelegateCommand SelectCommand { get; set; }
 
-        private async void LoadData()
+        private async void OnLoaded(object sender, RoutedEventArgs e)
         {
             try
             {
                 LoadingVisibility = Visibility.Visible;
                 ListVisibility = Visibility.Collapsed;
 
+                var items = await shell.GetAzureSubscriptionAsync();
                 subscriptions.Clear();
-                foreach (var item in await shell.GetAzureSubscriptionAsync())
+                foreach (var item in items)
                 {
                     subscriptions.Add(item);
                 }
@@ -103,17 +105,13 @@ namespace AzureDNS.ViewModels
                 LoadingVisibility = Visibility.Visible;
 
                 await shell.SelectAzureSubscriptionAsync(Current.SubscriptionId);
+                view.Complete();
             }
             finally 
             {
                 IsEnabled = true;
                 LoadingVisibility = Visibility.Collapsed;
             }
-
-            var window = Application.Current.MainWindow;
-            var view = container.Resolve<ResourcesView>();
-            view.Owner = window;
-            view.ShowDialog();
         }
     }
 }

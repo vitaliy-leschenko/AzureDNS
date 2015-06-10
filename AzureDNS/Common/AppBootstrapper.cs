@@ -1,6 +1,7 @@
-﻿using System.Management.Automation;
-using System.Management.Automation.Runspaces;
+﻿using System.Management.Automation.Runspaces;
 using System.Windows;
+using AzureDNS.Core;
+using AzureDNS.Core.DnsReaders;
 using AzureDNS.Views;
 using Microsoft.Practices.Prism.Logging;
 using Microsoft.Practices.Prism.UnityExtensions;
@@ -22,12 +23,7 @@ namespace AzureDNS.Common
 
         protected override DependencyObject CreateShell()
         {
-            var ps = Container.Resolve<AzurePowerShell>();
-            //if (!ps.AddAzureAccount()) return null;
-
-            ps.InitializeAzureResourceManager();
-
-            return Container.Resolve<SubscriptionsView>();
+            return Container.Resolve<MainPageView>();
         }
 
         protected override void InitializeShell()
@@ -39,6 +35,16 @@ namespace AzureDNS.Common
         protected override void ConfigureContainer()
         {
             base.ConfigureContainer();
+
+            Container
+                .RegisterType<IDnsRecordReader, ADnsRecordReader>("A")
+                .RegisterType<IDnsRecordReader, AaaaDnsRecordReader>("AAAA")
+                .RegisterType<IDnsRecordReader, CnameDnsRecordReader>("CNAME")
+                .RegisterType<IDnsRecordReader, MxDnsRecordReader>("MX")
+                .RegisterType<IDnsRecordReader, NsDnsRecordReader>("NS")
+                .RegisterType<IDnsRecordReader, SoaDnsRecordReader>("SOA")
+                .RegisterType<IDnsRecordReader, SrvDnsRecordReader>("SRV")
+                .RegisterType<IDnsRecordReader, TxtDnsRecordReader>("TXT");
 
             var iss = InitialSessionState.CreateDefault();
             var rs = RunspaceFactory.CreateRunspace(iss);

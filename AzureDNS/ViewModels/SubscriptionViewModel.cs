@@ -7,5 +7,6 @@ namespace AzureDNS.ViewModels
     {
         public Guid SubscriptionId { get; set; }
         public string SubscriptionName { get; set; }
+        public bool IsCurrent { get; set; }
     }
 }
