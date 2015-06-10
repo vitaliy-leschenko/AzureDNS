@@ -34,58 +34,9 @@
                 <ColumnDefinition Width="150"/>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Border Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="0,1,1,1"/>
-            <DockPanel Grid.Column="0" Margin="0,1,1,1">
-                <Border DockPanel.Dock="Top" Background="{StaticResource TitleBrush}" Padding="4,2" Height="24">
-                    <TextBlock Text="Zones:" VerticalAlignment="Center" />
-                </Border>
-                <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-                          ItemsSource="{Binding Path=Zones}" BorderThickness="0"
-                          SelectedItem="{Binding Path=CurrentZone, Mode=TwoWay}">
-                    <ListView.ItemTemplate>
-                        <DataTemplate>
-                            <TextBlock Text="{Binding Path=Name}" TextTrimming="CharacterEllipsis" />
-                        </DataTemplate>
-                    </ListView.ItemTemplate>
-                </ListView>
-            </DockPanel>
-
-            <Border Grid.Column="1" Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="1,0,0,1" Margin="2,0,0,0"/>
-            <DockPanel Grid.Column="1" Margin="2,0,0,1">
-                <Grid DockPanel.Dock="Top" Background="White" >
-                    <Border Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="0,1,0,1" />
-                    <DockPanel>
-                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                            <Button Width="60" Content="Edit" Margin="0,0,1,0" Command="{Binding Path=EditRecordCommand}" />
-                        </StackPanel>
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button Width="60" Content="A" Margin="1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="A" />
-                            <Button Width="60" Content="AAAA" Margin="1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="AAAA" />
-                            <Button Width="60" Content="MX" Margin="1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="MX" />
-                            <Button Width="60" Content="CNAME" Margin="1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="CNAME" />
-                            <Button Width="60" Content="TXT" Margin="1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="TXT" />
-                            <Button Width="60" Content="NS" Margin="1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="NS" />
-                        </StackPanel>
-                    </DockPanel>
-                </Grid>
-                <ListView x:Name="recordsList" BorderThickness="0" Margin="1,0,0,0"
-                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-                          ItemsSource="{Binding Path=Records}"
-                          SelectedItem="{Binding Path=CurrentRecord, Mode=TwoWay}">
-                    <ListView.View>
-                        <GridView>
-                            <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=Name}" Width="Auto" />
-                            <GridViewColumn Header="Type" DisplayMemberBinding="{Binding Path=RecordType}" Width="Auto" />
-                            <GridViewColumn Header="Value" DisplayMemberBinding="{Binding Path=RecordsValue}" />
-                        </GridView>
-                    </ListView.View>
-                </ListView>
-            </DockPanel>
+            <ContentControl Grid.Column="0" regions:RegionManager.RegionName="DnsZones" Margin="0,0,0,0" />
+            <ContentControl Grid.Column="1" regions:RegionManager.RegionName="DnsRecords" Margin="2,0,0,0" />
         </Grid>
-        <Grid Grid.Row="3" Margin="0,2,0,0">
-            <Border Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="0,1,0,0">
-                <ContentControl regions:RegionManager.RegionName="Logs" />
-            </Border>
-        </Grid>
+        <ContentControl Grid.Row="3" regions:RegionManager.RegionName="Logs" Margin="0,2,0,0" />
     </Grid>
 </Window>

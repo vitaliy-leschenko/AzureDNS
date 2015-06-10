@@ -113,7 +113,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Controls\LogEvent.cs" />
+    <Compile Include="Events\AzureSubscriptionChangedEvent.cs" />
+    <Compile Include="Events\DnsZoneChangedEvent.cs" />
+    <Compile Include="Events\LogEvent.cs" />
+    <Compile Include="Events\LogMessage.cs" />
     <Compile Include="Core\AaaaDnsRecord.cs" />
     <Compile Include="Core\DnsReaders\ADnsRecordReader.cs" />
     <Compile Include="Core\DnsReaders\AaaaDnsRecordReader.cs" />
@@ -137,9 +140,11 @@
     <Compile Include="Core\SoaDnsRecord.cs" />
     <Compile Include="Core\SrvDnsRecord.cs" />
     <Compile Include="Core\TxtDnsRecord.cs" />
+    <Compile Include="ViewModels\DnsRecordsViewModel.cs" />
     <Compile Include="ViewModels\DnsRecordViewModel.cs" />
+    <Compile Include="ViewModels\DnsZonesViewModel.cs" />
     <Compile Include="ViewModels\DnsZoneViewModel.cs" />
-    <Compile Include="ViewModels\LogViewModel.cs" />
+    <Compile Include="ViewModels\LogsViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\SubscriptionsViewModel.cs" />
     <Page Include="Resources\Brushes.xaml">
@@ -178,7 +183,15 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="Views\LogView.xaml">
+    <Page Include="Views\DnsRecordsView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DnsZonesView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\LogsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -197,9 +210,19 @@
     <Compile Include="Common\AppBootstrapper.cs" />
     <Compile Include="Common\AppLogger.cs" />
     <Compile Include="ViewModels\SubscriptionViewModel.cs" />
+    <Compile Include="Views\DnsRecordsView.xaml.cs">
+      <DependentUpon>DnsRecordsView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DnsZonesView.xaml.cs">
+      <DependentUpon>DnsZonesView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\IBaseView.cs" />
+    <Compile Include="Views\IDnsRecordsView.cs" />
+    <Compile Include="Views\IDnsZonesView.cs" />
+    <Compile Include="Views\ILogView.cs" />
     <Compile Include="Views\ISubscriptionsView.cs" />
-    <Compile Include="Views\LogView.xaml.cs">
-      <DependentUpon>LogView.xaml</DependentUpon>
+    <Compile Include="Views\LogsView.xaml.cs">
+      <DependentUpon>LogsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\MainPageView.xaml.cs">
       <DependentUpon>MainPageView.xaml</DependentUpon>

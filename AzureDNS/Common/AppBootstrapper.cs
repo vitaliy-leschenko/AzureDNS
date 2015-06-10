@@ -34,7 +34,9 @@ namespace AzureDNS.Common
         protected override DependencyObject CreateShell()
         {
             var manager = Container.Resolve<IRegionManager>();
-            manager.RegisterViewWithRegion("Logs", () => Container.Resolve<LogView>());
+            manager.RegisterViewWithRegion("Logs", () => Container.Resolve<LogsView>());
+            manager.RegisterViewWithRegion("DnsZones", () => Container.Resolve<DnsZonesView>());
+            manager.RegisterViewWithRegion("DnsRecords", () => Container.Resolve<DnsRecordsView>());
 
             return Container.Resolve<MainPageView>();
         }

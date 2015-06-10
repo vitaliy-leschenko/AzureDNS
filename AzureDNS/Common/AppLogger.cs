@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using AzureDNS.Controls;
+using AzureDNS.Events;
 using Microsoft.Practices.Prism.Logging;
 using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.ServiceLocation;

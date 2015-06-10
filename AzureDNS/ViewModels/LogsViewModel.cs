@@ -1,20 +1,20 @@
 ﻿using System.Collections.ObjectModel;
 using System.Windows;
 using AzureDNS.Common;
-using AzureDNS.Controls;
+using AzureDNS.Events;
 using AzureDNS.Views;
 using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.Unity;
 
 namespace AzureDNS.ViewModels
 {
-    public class LogViewModel: BaseViewModel
+    public class LogsViewModel: BaseViewModel
     {
         private readonly ILogView view;
         private readonly IUnityContainer container;
         private readonly ObservableCollection<LogMessage> messages = new ObservableCollection<LogMessage>();
 
-        public LogViewModel(ILogView view, IUnityContainer container)
+        public LogsViewModel(ILogView view, IUnityContainer container)
         {
             this.view = view;
             this.container = container;

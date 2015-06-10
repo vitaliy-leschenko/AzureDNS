@@ -1,0 +1,25 @@
+﻿<UserControl x:Class="AzureDNS.Views.DnsZonesView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <Border Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="1">
+        <DockPanel>
+            <Border DockPanel.Dock="Top" Background="{StaticResource TitleBrush}" Padding="4,2" Height="24">
+                <TextBlock Text="Zones:" VerticalAlignment="Center" />
+            </Border>
+            <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                          ItemsSource="{Binding Path=Zones}" BorderThickness="0"
+                          SelectedItem="{Binding Path=CurrentZone, Mode=TwoWay}">
+                <ListView.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding Path=Name}" TextTrimming="CharacterEllipsis" />
+                    </DataTemplate>
+                </ListView.ItemTemplate>
+            </ListView>
+        </DockPanel>
+    </Border>
+</UserControl>
