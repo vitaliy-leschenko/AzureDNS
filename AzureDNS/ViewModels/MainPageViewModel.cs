@@ -8,6 +8,7 @@ using AzureDNS.Common;
 using AzureDNS.Core;
 using AzureDNS.Views;
 using Microsoft.Practices.Prism.Commands;
+using Microsoft.Practices.Prism.Logging;
 using Microsoft.Practices.Unity;
 
 namespace AzureDNS.ViewModels
@@ -16,6 +17,7 @@ namespace AzureDNS.ViewModels
     {
         private readonly IMainPageView view;
         private readonly IUnityContainer container;
+        private readonly ILoggerFacade logger;
 
         private readonly ObservableCollection<DnsZoneViewModel> zones = new ObservableCollection<DnsZoneViewModel>();
         private readonly ObservableCollection<DnsRecordViewModel> records = new ObservableCollection<DnsRecordViewModel>();
@@ -128,6 +130,8 @@ namespace AzureDNS.ViewModels
             this.view = view;
             this.container = container;
 
+            logger = container.Resolve<ILoggerFacade>();
+
             window = (Window) view;
             window.Loaded += OnLoaded;
 
@@ -158,6 +162,8 @@ namespace AzureDNS.ViewModels
                 IsEnabled = false;
                 Loading = true;
 
+                logger.Log("Getting AzureSubscriptions...", Category.Info, Priority.Low);
+
                 var ps = container.Resolve<AzurePowerShell>();
                 await ps.InitializeAzureResourceManager();
 
@@ -177,6 +183,8 @@ namespace AzureDNS.ViewModels
             }
             finally
             {
+                logger.Log("Done", Category.Info, Priority.Low);
+
                 Loading = false;
                 IsEnabled = true;
             }
@@ -184,6 +192,8 @@ namespace AzureDNS.ViewModels
 
         private async Task LoadDnsZonesAsync()
         {
+            logger.Log("Getting AzureDnsZones...", Category.Info, Priority.Low);
+
             var ps = container.Resolve<AzurePowerShell>();
             var items = await ps.GetAzureDnsZoneAsync();
             Zones.Clear();
@@ -217,6 +227,8 @@ namespace AzureDNS.ViewModels
                 IsEnabled = false;
                 Loading = true;
 
+                logger.Log("Getting AzureDnsRecords...", Category.Info, Priority.Low);
+
                 var ps = container.Resolve<AzurePowerShell>();
                 var items = await ps.GetAzureDnsRecordsAsync(CurrentZone);
 
@@ -232,6 +244,8 @@ namespace AzureDNS.ViewModels
             }
             finally
             {
+                logger.Log("Done", Category.Info, Priority.Low);
+
                 Loading = false;
                 IsEnabled = true;
             }

@@ -113,6 +113,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\LogEvent.cs" />
     <Compile Include="Core\AaaaDnsRecord.cs" />
     <Compile Include="Core\DnsReaders\ADnsRecordReader.cs" />
     <Compile Include="Core\DnsReaders\AaaaDnsRecordReader.cs" />
@@ -138,6 +139,7 @@
     <Compile Include="Core\TxtDnsRecord.cs" />
     <Compile Include="ViewModels\DnsRecordViewModel.cs" />
     <Compile Include="ViewModels\DnsZoneViewModel.cs" />
+    <Compile Include="ViewModels\LogViewModel.cs" />
     <Compile Include="ViewModels\MainPageViewModel.cs" />
     <Compile Include="ViewModels\SubscriptionsViewModel.cs" />
     <Page Include="Resources\Brushes.xaml">
@@ -176,6 +178,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\LogView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\MainPageView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -192,6 +198,9 @@
     <Compile Include="Common\AppLogger.cs" />
     <Compile Include="ViewModels\SubscriptionViewModel.cs" />
     <Compile Include="Views\ISubscriptionsView.cs" />
+    <Compile Include="Views\LogView.xaml.cs">
+      <DependentUpon>LogView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\MainPageView.xaml.cs">
       <DependentUpon>MainPageView.xaml</DependentUpon>
     </Compile>

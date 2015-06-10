@@ -4,6 +4,8 @@ using AzureDNS.Core;
 using AzureDNS.Core.DnsReaders;
 using AzureDNS.Views;
 using Microsoft.Practices.Prism.Logging;
+using Microsoft.Practices.Prism.PubSubEvents;
+using Microsoft.Practices.Prism.Regions;
 using Microsoft.Practices.Prism.UnityExtensions;
 using Microsoft.Practices.Unity;
 
@@ -11,8 +13,16 @@ namespace AzureDNS.Common
 {
     class AppBootstrapper: UnityBootstrapper
     {
+        private readonly IUnityContainer container;
+
         public AppBootstrapper(App app)
         {
+            container = new UnityContainer().RegisterInstance<IEventAggregator>(new EventAggregator());
+        }
+
+        protected override IUnityContainer CreateContainer()
+        {
+            return container;
         }
 
         public override void Run(bool runWithDefaultConfiguration)
@@ -23,6 +33,9 @@ namespace AzureDNS.Common
 
         protected override DependencyObject CreateShell()
         {
+            var manager = Container.Resolve<IRegionManager>();
+            manager.RegisterViewWithRegion("Logs", () => Container.Resolve<LogView>());
+
             return Container.Resolve<MainPageView>();
         }
 
@@ -55,7 +68,7 @@ namespace AzureDNS.Common
 
         protected override ILoggerFacade CreateLogger()
         {
-            return new AppLogger();
+            return container.Resolve<AppLogger>();
         }
     }
 }

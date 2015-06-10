@@ -4,9 +4,10 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:controls="clr-namespace:AzureDNS.Controls"
+        xmlns:regions="http://www.codeplex.com/CompositeWPF"
         mc:Ignorable="d" Background="{StaticResource WindowBackground}"
         DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}" WindowStartupLocation="CenterScreen"
-        Title="{StaticResource appTitle}" Height="300" Width="613" IsEnabled="{Binding Path=IsEnabled}">
+        Title="{StaticResource appTitle}" Height="600" Width="800">
     
     <Window.Resources>
         <controls:BoolToVisibilityConverter x:Key="VisibilityConverter" HiddenVisibility="Hidden" />
@@ -16,28 +17,30 @@
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
             <RowDefinition Height="Auto" />
-            <RowDefinition/>
+            <RowDefinition Height="4*"/>
+            <RowDefinition Height="150" />
         </Grid.RowDefinitions>
-        <Border Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="0,0,0,1">
-            <DockPanel Margin="1">
+        <ProgressBar Grid.Row="0" IsIndeterminate="True" Visibility="{Binding Path=Loading, Converter={StaticResource VisibilityConverter}}" />
+
+        <Border Grid.Row="1" Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="0,0,0,1" Margin="0,0,0,2">
+            <DockPanel Margin="0,0,0,-1">
                 <Button Content="Select subscription" Margin="0,0,1,0" DockPanel.Dock="Left" Command="{Binding Path=SelectSubscriptionCommand}" />
                 <TextBlock Text="{Binding Path=SubscriptionName}" VerticalAlignment="Center" Padding="8,0" />
             </DockPanel>
         </Border>
-        <ProgressBar Grid.Row="1" IsIndeterminate="True" Visibility="{Binding Path=Loading, Converter={StaticResource VisibilityConverter}}" />
-        
+
         <Grid Grid.Row="2">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="150"/>
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
-            <Border Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="0,1,1,0"/>
-            <DockPanel Grid.Column="0" Margin="0,1,1,0">
+            <Border Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="0,1,1,1"/>
+            <DockPanel Grid.Column="0" Margin="0,1,1,1">
                 <Border DockPanel.Dock="Top" Background="{StaticResource TitleBrush}" Padding="4,2" Height="24">
                     <TextBlock Text="Zones:" VerticalAlignment="Center" />
                 </Border>
                 <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-                          ItemsSource="{Binding Path=Zones}"
+                          ItemsSource="{Binding Path=Zones}" BorderThickness="0"
                           SelectedItem="{Binding Path=CurrentZone, Mode=TwoWay}">
                     <ListView.ItemTemplate>
                         <DataTemplate>
@@ -47,20 +50,25 @@
                 </ListView>
             </DockPanel>
 
-            <Border Grid.Column="1" Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="1,1,0,0" Margin="2,0,0,0"/>
-            <DockPanel Grid.Column="1" Margin="3,1,0,0">
-                <Border DockPanel.Dock="Top" Background="White" >
-                    <StackPanel Orientation="Horizontal">
-                        <Button Content="Edit" Margin="0,0,1,0" Command="{Binding Path=EditRecordCommand}" />
-                        <Button Content="A" Margin="10,0,1,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="A" />
-                        <Button Content="AAAA" Margin="0,0,1,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="AAAA" />
-                        <Button Content="MX" Margin="0,0,1,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="MX" />
-                        <Button Content="CNAME" Margin="0,0,1,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="CNAME" />
-                        <Button Content="TXT" Margin="0,0,1,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="TXT" />
-                        <Button Content="NS" Margin="0,0,1,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="NS" />
-                    </StackPanel>
-                </Border>
-                <ListView x:Name="recordsList"
+            <Border Grid.Column="1" Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="1,0,0,1" Margin="2,0,0,0"/>
+            <DockPanel Grid.Column="1" Margin="2,0,0,1">
+                <Grid DockPanel.Dock="Top" Background="White" >
+                    <Border Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="0,1,0,1" />
+                    <DockPanel>
+                        <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
+                            <Button Width="60" Content="Edit" Margin="0,0,1,0" Command="{Binding Path=EditRecordCommand}" />
+                        </StackPanel>
+                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                            <Button Width="60" Content="A" Margin="1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="A" />
+                            <Button Width="60" Content="AAAA" Margin="1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="AAAA" />
+                            <Button Width="60" Content="MX" Margin="1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="MX" />
+                            <Button Width="60" Content="CNAME" Margin="1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="CNAME" />
+                            <Button Width="60" Content="TXT" Margin="1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="TXT" />
+                            <Button Width="60" Content="NS" Margin="1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="NS" />
+                        </StackPanel>
+                    </DockPanel>
+                </Grid>
+                <ListView x:Name="recordsList" BorderThickness="0" Margin="1,0,0,0"
                           ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                           ItemsSource="{Binding Path=Records}"
                           SelectedItem="{Binding Path=CurrentRecord, Mode=TwoWay}">
@@ -73,6 +81,11 @@
                     </ListView.View>
                 </ListView>
             </DockPanel>
+        </Grid>
+        <Grid Grid.Row="3" Margin="0,2,0,0">
+            <Border Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="0,1,0,0">
+                <ContentControl regions:RegionManager.RegionName="Logs" />
+            </Border>
         </Grid>
     </Grid>
 </Window>
