@@ -120,11 +120,12 @@ namespace AzureDNS.Core
                             var result = new List<DnsRecordViewModel>();
                             foreach (var item in records)
                             {
+                                string recordType = item.RecordType.ToString();
+
                                 var record = new DnsRecordViewModel();
                                 record.Name = item.Name;
-                                record.RecordType = item.RecordType.ToString();
-
-                                var reader = container.Resolve<IDnsRecordReader>(record.RecordType);
+                                record.RecordType = (RecordType) Enum.Parse(typeof (RecordType), recordType);
+                                var reader = container.Resolve<IDnsRecordReader>(recordType);
 
                                 var list = new List<BaseDnsRecord>();
                                 foreach (var r in item.Records)

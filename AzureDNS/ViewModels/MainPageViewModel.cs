@@ -26,6 +26,9 @@ namespace AzureDNS.ViewModels
         private ICommand selectSubscriptionCommand;
         private readonly Window window;
         private DnsZoneViewModel currentZone;
+        private DelegateCommand editRecordCommand;
+        private DnsRecordViewModel currentRecord;
+        private DelegateCommand<object> addRecordCommand;
 
         public bool IsEnabled
         {
@@ -80,12 +83,44 @@ namespace AzureDNS.ViewModels
                 currentZone = value;
                 OnPropertyChanged();
                 LoadDnsRecordsAsync();
+                AddRecordCommand.RaiseCanExecuteChanged();
             }
         }
 
         public ObservableCollection<DnsRecordViewModel> Records
         {
             get { return records; }
+        }
+
+        public DnsRecordViewModel CurrentRecord
+        {
+            get { return currentRecord; }
+            set
+            {
+                currentRecord = value;
+                OnPropertyChanged();
+                EditRecordCommand.RaiseCanExecuteChanged();
+            }
+        }
+
+        public DelegateCommand EditRecordCommand
+        {
+            get { return editRecordCommand; }
+            set
+            {
+                editRecordCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public DelegateCommand<object> AddRecordCommand
+        {
+            get { return addRecordCommand; }
+            set
+            {
+                addRecordCommand = value;
+                OnPropertyChanged();
+            }
         }
 
         public MainPageViewModel(IMainPageView view, IUnityContainer container)
@@ -97,6 +132,18 @@ namespace AzureDNS.ViewModels
             window.Loaded += OnLoaded;
 
             SelectSubscriptionCommand = new DelegateCommand(OnSelectSubscriptionClick);
+            EditRecordCommand = new DelegateCommand(OnEditRecordClick, () => CurrentRecord != null && CurrentRecord.AllowEdit);
+            AddRecordCommand = new DelegateCommand<object>(OnAddRecordClick, t => CurrentZone != null);
+        }
+
+        private void OnAddRecordClick(object obj)
+        {
+            MessageBox.Show(obj.ToString());
+        }
+
+        private void OnEditRecordClick()
+        {
+            MessageBox.Show("test");
         }
 
         private async void OnLoaded(object sender, RoutedEventArgs e)

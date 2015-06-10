@@ -11,7 +11,7 @@
     <Window.Resources>
         <controls:BoolToVisibilityConverter x:Key="VisibilityConverter" HiddenVisibility="Hidden" />
     </Window.Resources>
-    
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -49,11 +49,21 @@
 
             <Border Grid.Column="1" Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="1,1,0,0" Margin="2,0,0,0"/>
             <DockPanel Grid.Column="1" Margin="3,1,0,0">
-                <Border DockPanel.Dock="Top" Background="{StaticResource TitleBrush}" Padding="4,2" Height="24">
-                    <TextBlock Text="Records:" VerticalAlignment="Center" />
+                <Border DockPanel.Dock="Top" Background="White" >
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="Edit" Margin="0,0,1,0" Command="{Binding Path=EditRecordCommand}" />
+                        <Button Content="A" Margin="10,0,1,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="A" />
+                        <Button Content="AAAA" Margin="0,0,1,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="AAAA" />
+                        <Button Content="MX" Margin="0,0,1,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="MX" />
+                        <Button Content="CNAME" Margin="0,0,1,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="CNAME" />
+                        <Button Content="TXT" Margin="0,0,1,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="TXT" />
+                        <Button Content="NS" Margin="0,0,1,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="NS" />
+                    </StackPanel>
                 </Border>
-                <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
-                          ItemsSource="{Binding Path=Records}">
+                <ListView x:Name="recordsList"
+                          ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                          ItemsSource="{Binding Path=Records}"
+                          SelectedItem="{Binding Path=CurrentRecord, Mode=TwoWay}">
                     <ListView.View>
                         <GridView>
                             <GridViewColumn Header="Name" DisplayMemberBinding="{Binding Path=Name}" Width="Auto" />
