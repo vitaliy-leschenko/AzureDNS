@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using System.Windows;
 using AzureDNS.Common;
 using AzureDNS.Core;
@@ -18,8 +19,8 @@ namespace AzureDNS.ViewModels
         private readonly IDnsRecordsView view;
         private readonly ObservableCollection<DnsRecordViewModel> records = new ObservableCollection<DnsRecordViewModel>();
         private DnsRecordViewModel currentRecord;
-        private DelegateCommand editRecordCommand;
-        private DelegateCommand<object> addRecordCommand;
+        private DelegateCommand<DnsRecordViewModel> editRecordCommand;
+        private DelegateCommand<string> addRecordCommand;
         private readonly IEventAggregator eventAggregator;
         private readonly ILoggerFacade logger;
         private bool loading;
@@ -42,7 +43,7 @@ namespace AzureDNS.ViewModels
             }
         }
 
-        public DelegateCommand EditRecordCommand
+        public DelegateCommand<DnsRecordViewModel> EditRecordCommand
         {
             get { return editRecordCommand; }
             set
@@ -52,7 +53,7 @@ namespace AzureDNS.ViewModels
             }
         }
 
-        public DelegateCommand<object> AddRecordCommand
+        public DelegateCommand<string> AddRecordCommand
         {
             get { return addRecordCommand; }
             set
@@ -92,16 +93,55 @@ namespace AzureDNS.ViewModels
             view.Loaded += OnLoaded;
             view.Unloaded += OnUnloaded;
 
-            AddRecordCommand = new DelegateCommand<object>(OnAddDnsRecordClick, t => currentZone != null);
-            EditRecordCommand = new DelegateCommand(OnEditDnsRecordClick, () => currentZone != null && currentRecord != null && currentRecord.AllowEdit);
+            AddRecordCommand = new DelegateCommand<string>(OnAddDnsRecordClick, t => currentZone != null);
+            EditRecordCommand = new DelegateCommand<DnsRecordViewModel>(OnEditDnsRecordClick, t => currentZone != null && t != null && t.AllowEdit);
         }
 
-        private void OnEditDnsRecordClick()
+        private async void OnEditDnsRecordClick(DnsRecordViewModel record)
         {
+            IDnsRecordEditor editor;
+            try
+            {
+                editor = container.Resolve<IDnsRecordEditor>(record.RecordType.ToString());
+            }
+            catch (Exception)
+            {
+                logger.Log("Can't create editor for "+record.RecordType+" record.", Category.Exception, Priority.Medium);
+                return;
+            }
+
+            editor.EditMode = true;
+            editor.DnsZone = currentZone;
+            editor.DnsRecord = record;
+            editor.Owner = Application.Current.MainWindow;
+
+            if (editor.ShowDialog() ?? false)
+            {
+                await LoadDnsRecordsAsync();
+            }
         }
 
-        private void OnAddDnsRecordClick(object obj)
+        private async void OnAddDnsRecordClick(string type)
         {
+            IDnsRecordEditor editor;
+            try
+            {
+                editor = container.Resolve<IDnsRecordEditor>(type);
+            }
+            catch (Exception)
+            {
+                logger.Log("Can't create editor for " + type + " record.", Category.Exception, Priority.Medium);
+                return;
+            }
+
+            editor.EditMode = false;
+            editor.DnsZone = currentZone;
+            editor.Owner = Application.Current.MainWindow;
+
+            if (editor.ShowDialog() ?? false)
+            {
+                await LoadDnsRecordsAsync();
+            }
         }
 
         private void OnLoaded(object sender, RoutedEventArgs e)
@@ -126,6 +166,11 @@ namespace AzureDNS.ViewModels
                 return;
             }
 
+            await LoadDnsRecordsAsync();
+        }
+
+        private async Task LoadDnsRecordsAsync()
+        {
             try
             {
                 IsEnabled = false;
@@ -134,7 +179,7 @@ namespace AzureDNS.ViewModels
                 logger.Log("Getting AzureDnsRecords...", Category.Info, Priority.Low);
 
                 var ps = container.Resolve<AzurePowerShell>();
-                var items = await ps.GetAzureDnsRecordsAsync(zone);
+                var items = await ps.GetAzureDnsRecordsAsync(currentZone);
 
                 Records.Clear();
                 foreach (var item in items)

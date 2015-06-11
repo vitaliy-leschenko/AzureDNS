@@ -13,7 +13,7 @@
                 <Border Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="0,1,0,1" />
                 <DockPanel>
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                        <Button Width="60" Content="Edit" Margin="0,0,1,0" Command="{Binding Path=EditRecordCommand}" />
+                        <Button Width="60" Content="Edit" Margin="0,0,1,0" Command="{Binding Path=EditRecordCommand}" CommandParameter="{Binding Path=CurrentRecord}" />
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
                         <Button Width="60" Content="A" Margin="1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="A" />
@@ -21,7 +21,6 @@
                         <Button Width="60" Content="MX" Margin="1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="MX" />
                         <Button Width="60" Content="CNAME" Margin="1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="CNAME" />
                         <Button Width="60" Content="TXT" Margin="1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="TXT" />
-                        <Button Width="60" Content="NS" Margin="1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="NS" />
                     </StackPanel>
                 </DockPanel>
             </Grid>

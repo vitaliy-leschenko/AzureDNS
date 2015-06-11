@@ -141,6 +141,7 @@
     <Compile Include="Core\SrvDnsRecord.cs" />
     <Compile Include="Core\TxtDnsRecord.cs" />
     <Compile Include="ViewModels\AzureSubscriptionViewModel.cs" />
+    <Compile Include="ViewModels\DnsARecordEditorViewModel.cs" />
     <Compile Include="ViewModels\DnsRecordsViewModel.cs" />
     <Compile Include="ViewModels\DnsRecordViewModel.cs" />
     <Compile Include="ViewModels\DnsZonesViewModel.cs" />
@@ -186,6 +187,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\DnsARecordEditorView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Views\DnsRecordsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -212,6 +217,9 @@
     <Compile Include="Views\AzureSubscriptionView.xaml.cs">
       <DependentUpon>AzureSubscriptionView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\DnsARecordEditorView.xaml.cs">
+      <DependentUpon>DnsARecordEditorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\DnsRecordsView.xaml.cs">
       <DependentUpon>DnsRecordsView.xaml</DependentUpon>
     </Compile>
@@ -220,6 +228,8 @@
     </Compile>
     <Compile Include="Views\IAzureSubscriptionView.cs" />
     <Compile Include="Views\IBaseView.cs" />
+    <Compile Include="Views\IDnsARecordEditor.cs" />
+    <Compile Include="Views\IDnsRecordEditor.cs" />
     <Compile Include="Views\IDnsRecordsView.cs" />
     <Compile Include="Views\IDnsZonesView.cs" />
     <Compile Include="Views\ILogView.cs" />

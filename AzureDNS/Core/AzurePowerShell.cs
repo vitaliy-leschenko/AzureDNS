@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
@@ -171,6 +172,72 @@ namespace AzureDNS.Core
             ps.AddCommand("Switch-AzureMode")
                 .AddParameter("Name", "AzureResourceManager")
                 .Invoke();
+        }
+
+        public async Task RemoveRecordSetAsync(DnsZoneViewModel dnsZone, DnsRecordViewModel record)
+        {
+            await Task.Run(
+                delegate
+                {
+                    lock (runspace)
+                    {
+                        var pipe = runspace.CreatePipeline();
+
+                        var rs = new Command("Remove-AzureDnsRecordSet");
+                        rs.Parameters.Add("Name", record.Name);
+                        rs.Parameters.Add("RecordType", record.RecordType.ToString());
+                        rs.Parameters.Add("ZoneName", dnsZone.Name);
+                        rs.Parameters.Add("ResourceGroupName", dnsZone.ResourceGroupName);
+                        rs.Parameters.Add("Force");
+                        pipe.Commands.Add(rs);
+
+                        pipe.Invoke();
+                    }
+                });
+        }
+
+        public async Task AddARecordAsync(DnsZoneViewModel dnsZone, string hostName, string[] addresses, bool overwrite)
+        {
+            await Task.Run(
+                delegate
+                {
+                    lock (runspace)
+                    {
+                        var pipe = runspace.CreatePipeline();
+
+                        var rs = new Command("New-AzureDnsRecordSet");
+                        rs.Parameters.Add("Name", hostName);
+                        rs.Parameters.Add("ZoneName", dnsZone.Name);
+                        rs.Parameters.Add("ResourceGroupName", dnsZone.ResourceGroupName);
+                        rs.Parameters.Add("RecordType", "A");
+                        rs.Parameters.Add("Ttl", 300);
+                        if (overwrite)
+                        {
+                            rs.Parameters.Add("Overwrite");
+                            rs.Parameters.Add("Force");
+                        }
+
+                        pipe.Commands.Add(rs);
+
+                        foreach (var address in addresses)
+                        {
+                            var ip = new Command("Add-AzureDnsRecordConfig");
+                            ip.Parameters.Add("Ipv4Address", address);
+
+                            pipe.Commands.Add(ip);
+                        }
+                        pipe.Commands.Add(new Command("Set-AzureDnsRecordSet"));
+
+                        pipe.Invoke();
+
+                        if (pipe.HadErrors)
+                        {
+                            dynamic error = pipe.Error.Read();
+                            Exception ex = error.Exception;
+                            throw new Exception("Can't create A record", ex);
+                        }
+                    }
+                });
         }
     }
 }
