@@ -143,6 +143,7 @@
     <Compile Include="Core\TxtDnsRecord.cs" />
     <Compile Include="ViewModels\AzureSubscriptionViewModel.cs" />
     <Compile Include="ViewModels\DnsAaaaRecordEditorViewModel.cs" />
+    <Compile Include="ViewModels\DnsMxRecordEditorViewModel.cs" />
     <Compile Include="ViewModels\DnsTxtRecordEditorViewModel.cs" />
     <Compile Include="ViewModels\DnsCnameRecordEditorViewModel.cs" />
     <Compile Include="ViewModels\DnsARecordEditorViewModel.cs" />
@@ -195,6 +196,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\DnsMxRecordEditorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\DnsTxtRecordEditorView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -236,6 +241,9 @@
     <Compile Include="Views\DnsAaaaRecordEditorView.xaml.cs">
       <DependentUpon>DnsAaaaRecordEditorView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\DnsMxRecordEditorView.xaml.cs">
+      <DependentUpon>DnsMxRecordEditorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\DnsTxtRecordEditorView.xaml.cs">
       <DependentUpon>DnsTxtRecordEditorView.xaml</DependentUpon>
     </Compile>
@@ -256,6 +264,7 @@
     <Compile Include="Views\IDnsAaaaRecordEditor.cs" />
     <Compile Include="Views\IDnsARecordEditor.cs" />
     <Compile Include="Views\IDnsCnameRecordEditor.cs" />
+    <Compile Include="Views\IDnsMxRecordEditor.cs" />
     <Compile Include="Views\IDnsRecordEditor.cs" />
     <Compile Include="Views\IDnsRecordsView.cs" />
     <Compile Include="Views\IDnsTxtRecordEditor.cs" />

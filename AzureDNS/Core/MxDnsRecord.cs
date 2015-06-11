@@ -7,7 +7,7 @@ namespace AzureDNS.Core
 
         public override string ToString()
         {
-            return string.Format("[{0},{1}]", Preference, Exchange);
+            return string.Format("{0},{1}", Preference, Exchange);
         }
     }
 }
