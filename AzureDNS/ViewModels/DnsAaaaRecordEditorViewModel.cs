@@ -10,15 +10,15 @@ using Microsoft.Practices.Unity;
 
 namespace AzureDNS.ViewModels
 {
-    public class DnsARecordEditorViewModel: BaseViewModel
+    public class DnsAaaaRecordEditorViewModel: BaseViewModel
     {
-        private readonly IDnsARecordEditor view;
+        private readonly IDnsAaaaRecordEditor view;
         private readonly IUnityContainer container;
         private bool editMode;
         private DnsZoneViewModel dnsZone;
         private DnsRecordViewModel dnsRecord;
         private string hostName;
-        private string ip;
+        private string ip = string.Empty;
         private DelegateCommand saveCommand;
         private DelegateCommand deleteCommand;
         private bool isEnabled = true;
@@ -63,7 +63,7 @@ namespace AzureDNS.ViewModels
                 dnsRecord = value;
                 OnPropertyChanged();
                 HostName = value.Name;
-                IP = string.Join(";", value.Records.OfType<ADnsRecord>().Select(t => t.Ipv4Address));
+                IP = string.Join(";", value.Records.OfType<AaaaDnsRecord>().Select(t => t.Ipv6Address));
             }
         }
 
@@ -127,7 +127,7 @@ namespace AzureDNS.ViewModels
             }
         }
 
-        public DnsARecordEditorViewModel(IDnsARecordEditor view, IUnityContainer container)
+        public DnsAaaaRecordEditorViewModel(IDnsAaaaRecordEditor view, IUnityContainer container)
         {
             this.view = view;
             this.container = container;
@@ -157,9 +157,9 @@ namespace AzureDNS.ViewModels
                     .Where(t => !string.IsNullOrWhiteSpace(t))
                     .Select(t => t.Trim())
                     .ToArray();
-                var records = addresses.Select(t => new Dictionary<string, string> { { "Ipv4Address", t } }).ToList();
+                var records = addresses.Select(t => new Dictionary<string, string> { { "Ipv6Address", t } }).ToList();
 
-                await ps.AddDnsRecordAsync(dnsZone, name, "A", options, records, EditMode);
+                await ps.AddDnsRecordAsync(dnsZone, name, "AAAA", options, records, EditMode);
                 view.Complete();
             }
             catch (Exception ex)

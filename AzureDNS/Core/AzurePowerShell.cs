@@ -196,7 +196,10 @@ namespace AzureDNS.Core
                 });
         }
 
-        public async Task AddARecordAsync(DnsZoneViewModel dnsZone, string hostName, string[] addresses, bool overwrite)
+        public async Task AddDnsRecordAsync(DnsZoneViewModel dnsZone, string hostName, string type, 
+            Dictionary<string, object> options,
+            List<Dictionary<string, string>> records, 
+            bool overwrite = false)
         {
             await Task.Run(
                 delegate
@@ -209,8 +212,11 @@ namespace AzureDNS.Core
                         rs.Parameters.Add("Name", hostName);
                         rs.Parameters.Add("ZoneName", dnsZone.Name);
                         rs.Parameters.Add("ResourceGroupName", dnsZone.ResourceGroupName);
-                        rs.Parameters.Add("RecordType", "A");
-                        rs.Parameters.Add("Ttl", 300);
+                        rs.Parameters.Add("RecordType", type);
+                        foreach (var item in options)
+                        {
+                            rs.Parameters.Add(item.Key, item.Value);
+                        }
                         if (overwrite)
                         {
                             rs.Parameters.Add("Overwrite");
@@ -219,10 +225,14 @@ namespace AzureDNS.Core
 
                         pipe.Commands.Add(rs);
 
-                        foreach (var address in addresses)
+                        foreach (var record in records)
                         {
                             var ip = new Command("Add-AzureDnsRecordConfig");
-                            ip.Parameters.Add("Ipv4Address", address);
+
+                            foreach (var item in record)
+                            {
+                                ip.Parameters.Add(item.Key, item.Value);
+                            }
 
                             pipe.Commands.Add(ip);
                         }
@@ -234,10 +244,11 @@ namespace AzureDNS.Core
                         {
                             dynamic error = pipe.Error.Read();
                             Exception ex = error.Exception;
-                            throw new Exception("Can't create A record", ex);
+                            throw new Exception("Can't create " + type + " record", ex);
                         }
                     }
                 });
         }
+
     }
 }
