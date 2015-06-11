@@ -17,8 +17,8 @@ namespace AzureDNS.ViewModels
         private bool editMode;
         private DnsZoneViewModel dnsZone;
         private DnsRecordViewModel dnsRecord;
-        private string hostName;
-        private string ip;
+        private string hostName = string.Empty;
+        private string ip = string.Empty;
         private DelegateCommand saveCommand;
         private DelegateCommand deleteCommand;
         private bool isEnabled = true;
