@@ -4,6 +4,6 @@ namespace AzureDNS.Views
 {
     public interface ILogView: IBaseView
     {
-        void FocusItem(LogMessage item);
+        void ScrollDown();
     }
 }

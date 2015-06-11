@@ -1,6 +1,5 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
-using AzureDNS.Controls;
 using AzureDNS.Events;
 using AzureDNS.ViewModels;
 using Microsoft.Practices.Unity;
@@ -24,10 +23,9 @@ namespace AzureDNS.Views
             ViewModel = container.Resolve<LogsViewModel>(new ParameterOverride("view", this));
         }
 
-        public void FocusItem(LogMessage item)
+        public void ScrollDown()
         {
-            list.SelectedItem = item;
-            list.ScrollIntoView(item);
+            logView.ScrollToEnd();
         }
     }
 }

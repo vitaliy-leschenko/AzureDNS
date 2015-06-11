@@ -1,4 +1,5 @@
-﻿using System.Collections.ObjectModel;
+﻿using System;
+using System.Collections.ObjectModel;
 using System.Windows;
 using AzureDNS.Common;
 using AzureDNS.Events;
@@ -12,7 +13,7 @@ namespace AzureDNS.ViewModels
     {
         private readonly ILogView view;
         private readonly IUnityContainer container;
-        private readonly ObservableCollection<LogMessage> messages = new ObservableCollection<LogMessage>();
+        private string logText;
 
         public LogsViewModel(ILogView view, IUnityContainer container)
         {
@@ -23,9 +24,14 @@ namespace AzureDNS.ViewModels
             view.Unloaded += OnUnloaded;
         }
 
-        public ObservableCollection<LogMessage> Messages
+        public string LogText
         {
-            get { return messages; }
+            get { return logText; }
+            set
+            {
+                logText = value;
+                OnPropertyChanged();
+            }
         }
 
         private void OnUnloaded(object sender, RoutedEventArgs e)
@@ -44,8 +50,17 @@ namespace AzureDNS.ViewModels
 
         private void OnLogEvent(LogMessage item)
         {
-            Messages.Add(item);
-            view.FocusItem(item);
+            var text = string.Format("[{0}] {1}", item.Category, item.Message);
+            if (string.IsNullOrEmpty(LogText))
+            {
+                LogText = text;
+            }
+            else
+            {
+                LogText += Environment.NewLine + text;
+            }
+
+            view.ScrollDown();
         }
     }
 }

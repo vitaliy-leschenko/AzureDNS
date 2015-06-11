@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
              mc:Ignorable="d" IsEnabled="{Binding Path=IsEnabled}"
              DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}" 
+             xmlns:i="clr-namespace:System.Windows.Interactivity;assembly=System.Windows.Interactivity"
              d:DesignHeight="390" d:DesignWidth="640">
     <Grid>
         <Border Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="1,0,1,1"/>
@@ -37,6 +38,11 @@
                         <GridViewColumn Header="Value" DisplayMemberBinding="{Binding Path=RecordsValue}" />
                     </GridView>
                 </ListView.View>
+                <i:Interaction.Triggers>
+                    <i:EventTrigger EventName="MouseDoubleClick">
+                        <i:InvokeCommandAction Command="{Binding Path=EditRecordCommand}" CommandParameter="{Binding CurrentRecord}" />
+                    </i:EventTrigger>
+                </i:Interaction.Triggers>
             </ListView>
         </DockPanel>
     </Grid>

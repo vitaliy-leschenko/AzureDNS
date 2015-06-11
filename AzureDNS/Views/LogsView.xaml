@@ -6,15 +6,8 @@
              mc:Ignorable="d" 
              DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}" 
              d:DesignHeight="300" d:DesignWidth="300">
-    <Border Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="1">
-        <ListView ItemsSource="{Binding Path=Messages}" x:Name="list" BorderThickness="0">
-            <ListView.View>
-                <GridView>
-                    <GridViewColumn Header="Priority" DisplayMemberBinding="{Binding Path=Priority}" />
-                    <GridViewColumn Header="Category" DisplayMemberBinding="{Binding Path=Category}" />
-                    <GridViewColumn Header="Message" DisplayMemberBinding="{Binding Path=Message}" />
-                </GridView>
-            </ListView.View>
-        </ListView>
-    </Border>
+    <TextBox AcceptsReturn="True" IsReadOnly="True" IsReadOnlyCaretVisible="True" Text="{Binding Path=LogText}"
+             x:Name="logView" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
+
+    </TextBox>
 </UserControl>
