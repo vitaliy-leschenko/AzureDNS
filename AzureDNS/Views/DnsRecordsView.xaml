@@ -14,9 +14,15 @@
                 <Border Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="0,1,0,1" />
                 <DockPanel>
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                        <Button Width="60" Content="Edit" Margin="0,0,1,0" Command="{Binding Path=EditRecordCommand}" CommandParameter="{Binding Path=CurrentRecord}" />
+                        <Button Margin="0,0,0,0" Command="{Binding Path=EditRecordCommand}" CommandParameter="{Binding Path=CurrentRecord}">
+                            <Image Source="/Assets/edit.png" Width="16" Height="16"/>
+                        </Button>
+                        <Button Command="{Binding Path=RemoveRecordCommand}" CommandParameter="{Binding Path=CurrentRecord}" Margin="-1,0,0,0">
+                            <Image Source="/Assets/delete.png" Width="16" Height="16"/>
+                        </Button>
                     </StackPanel>
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
+                        <TextBlock Text="New record:" VerticalAlignment="Center" Margin="0,0,5,0" />
                         <Button Width="60" Content="A" Margin="-1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="A" />
                         <Button Width="60" Content="AAAA" Margin="-1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="AAAA" />
                         <Button Width="60" Content="CNAME" Margin="-1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="CNAME" />
