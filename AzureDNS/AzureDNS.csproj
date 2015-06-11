@@ -113,6 +113,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\NegativeToVisibilityConverter.cs" />
     <Compile Include="Events\AzureSubscriptionChangedEvent.cs" />
     <Compile Include="Events\DnsZoneChangedEvent.cs" />
     <Compile Include="Events\LogEvent.cs" />
@@ -142,6 +143,7 @@
     <Compile Include="Core\TxtDnsRecord.cs" />
     <Compile Include="ViewModels\AzureSubscriptionViewModel.cs" />
     <Compile Include="ViewModels\DnsAaaaRecordEditorViewModel.cs" />
+    <Compile Include="ViewModels\DnsTxtRecordEditorViewModel.cs" />
     <Compile Include="ViewModels\DnsCnameRecordEditorViewModel.cs" />
     <Compile Include="ViewModels\DnsARecordEditorViewModel.cs" />
     <Compile Include="ViewModels\DnsRecordsViewModel.cs" />
@@ -193,6 +195,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
+    <Page Include="Views\DnsTxtRecordEditorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\DnsCnameRecordEditorView.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -230,6 +236,9 @@
     <Compile Include="Views\DnsAaaaRecordEditorView.xaml.cs">
       <DependentUpon>DnsAaaaRecordEditorView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\DnsTxtRecordEditorView.xaml.cs">
+      <DependentUpon>DnsTxtRecordEditorView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\DnsCnameRecordEditorView.xaml.cs">
       <DependentUpon>DnsCnameRecordEditorView.xaml</DependentUpon>
     </Compile>
@@ -249,6 +258,7 @@
     <Compile Include="Views\IDnsCnameRecordEditor.cs" />
     <Compile Include="Views\IDnsRecordEditor.cs" />
     <Compile Include="Views\IDnsRecordsView.cs" />
+    <Compile Include="Views\IDnsTxtRecordEditor.cs" />
     <Compile Include="Views\IDnsZonesView.cs" />
     <Compile Include="Views\ILogView.cs" />
     <Compile Include="Views\ISubscriptionsView.cs" />

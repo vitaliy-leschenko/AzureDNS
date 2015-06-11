@@ -66,7 +66,8 @@ namespace AzureDNS.Common
                 .RegisterType<IDnsRecordReader, TxtDnsRecordReader>("TXT")
                 .RegisterType<IDnsRecordEditor, DnsARecordEditorView>("A")
                 .RegisterType<IDnsRecordEditor, DnsAaaaRecordEditorView>("AAAA")
-                .RegisterType<IDnsRecordEditor, DnsCnameRecordEditorView>("CNAME");
+                .RegisterType<IDnsRecordEditor, DnsCnameRecordEditorView>("CNAME")
+                .RegisterType<IDnsRecordEditor, DnsTxtRecordEditorView>("TXT");
 
             var iss = InitialSessionState.CreateDefault();
             var rs = RunspaceFactory.CreateRunspace(iss);

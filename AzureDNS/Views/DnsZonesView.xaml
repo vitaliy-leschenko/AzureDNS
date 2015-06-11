@@ -18,8 +18,9 @@
                     </Border>
                 </DockPanel>
             </Border>
-            
+            <ProgressBar DockPanel.Dock="Top" IsIndeterminate="True" Visibility="{Binding Path=Loading, Converter={StaticResource PositiveToVisibilityConverter}}" Margin="0,2,0,0" />
             <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
+                      Visibility="{Binding Path=Loading, Converter={StaticResource NegativeToVisibilityConverter}}"
                           ItemsSource="{Binding Path=Zones}" BorderThickness="0"
                           SelectedItem="{Binding Path=CurrentZone, Mode=TwoWay}">
                 <ListView.ItemTemplate>
