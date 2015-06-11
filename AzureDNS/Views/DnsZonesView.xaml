@@ -10,8 +10,13 @@
         <DockPanel>
             <Border DockPanel.Dock="Top" Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="0,0,0,1">
                 <DockPanel Margin="0,-1">
-                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right" Margin="0,0,-1,0">
-                        <Button Content="Add zone" Command="{Binding Path=AddZoneCommand}" />
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                        <Button Command="{Binding Path=AddZoneCommand}" Margin="0,0,-1,0">
+                            <Image Source="/Assets/add.png" Width="16" Height="16"/>
+                        </Button>
+                        <Button Command="{Binding Path=RemoveZoneCommand}" Margin="0,0,-1,0">
+                            <Image Source="/Assets/delete.png" Width="16" Height="16"/>
+                        </Button>
                     </StackPanel>
                     <Border Padding="4,2" Height="24">
                         <TextBlock Text="Zones:" VerticalAlignment="Center" />

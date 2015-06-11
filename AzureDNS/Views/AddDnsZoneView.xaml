@@ -1,0 +1,25 @@
+﻿<Window x:Class="AzureDNS.Views.AddDnsZoneView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Add new DNS zone" Width="300"
+        DataContext="{Binding ViewModel, RelativeSource={RelativeSource Self}}" 
+        IsEnabled="{Binding Path=IsEnabled}"
+        WindowStartupLocation="CenterOwner" ResizeMode="NoResize" WindowStyle="ToolWindow" SnapsToDevicePixels="True"
+        SizeToContent="Height">
+    <Grid>
+        <StackPanel Margin="5">
+            <TextBlock Text="Azure resource group name:" Margin="0,5,0,0" />
+            <ComboBox ItemsSource="{Binding Path=Groups}" SelectedItem="{Binding Path=ResourceGroupName, Mode=TwoWay}"/>
+
+            <TextBlock Text="Zone name:"/>
+            <TextBox Text="{Binding Path=ZoneName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" />
+
+            <StackPanel Orientation="Horizontal" Margin="0,10,0,0">
+                <Button Content="Add" IsDefault="True" Command="{Binding Path=AddCommand}" />
+                <Button Content="Cancel" Margin="5,0,0,0" IsCancel="True" />
+            </StackPanel>
+        </StackPanel>
+        <ProgressBar DockPanel.Dock="Top" IsIndeterminate="True" Visibility="{Binding Path=Loading, Converter={StaticResource PositiveToVisibilityConverter}}" Margin="5,0,5,0" 
+                     VerticalAlignment="Top"/>
+    </Grid>
+</Window>

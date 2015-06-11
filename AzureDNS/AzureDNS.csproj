@@ -145,6 +145,7 @@
     <Compile Include="Core\SoaDnsRecord.cs" />
     <Compile Include="Core\SrvDnsRecord.cs" />
     <Compile Include="Core\TxtDnsRecord.cs" />
+    <Compile Include="ViewModels\AddDnsZoneViewModel.cs" />
     <Compile Include="ViewModels\AzureSubscriptionViewModel.cs" />
     <Compile Include="ViewModels\DnsAaaaRecordEditorViewModel.cs" />
     <Compile Include="ViewModels\DnsMxRecordEditorViewModel.cs" />
@@ -191,6 +192,10 @@
     <Page Include="Resources\Textbox.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\AddDnsZoneView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Views\AzureSubscriptionView.xaml">
       <SubType>Designer</SubType>
@@ -239,6 +244,9 @@
     <Compile Include="Common\AppBootstrapper.cs" />
     <Compile Include="Common\AppLogger.cs" />
     <Compile Include="ViewModels\SubscriptionViewModel.cs" />
+    <Compile Include="Views\AddDnsZoneView.xaml.cs">
+      <DependentUpon>AddDnsZoneView.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\AzureSubscriptionView.xaml.cs">
       <DependentUpon>AzureSubscriptionView.xaml</DependentUpon>
     </Compile>
@@ -330,7 +338,12 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Assets\delete.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Assets\add.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

@@ -25,6 +25,7 @@ namespace AzureDNS.ViewModels
         private bool isEnabled = true;
         private bool loading = false;
         private DelegateCommand addZoneCommand;
+        private DelegateCommand removeZoneCommand;
         private string currentSubscription;
 
         public DnsZonesViewModel(IDnsZonesView view, IUnityContainer container)
@@ -38,6 +39,7 @@ namespace AzureDNS.ViewModels
             view.Unloaded += OnUnloaded;
 
             AddZoneCommand = new DelegateCommand(OnAddZoneClick, () => !string.IsNullOrEmpty(currentSubscription));
+            RemoveZoneCommand = new DelegateCommand(OnRemoveClick, () => CurrentZone != null);
         }
 
         public bool IsEnabled
@@ -73,6 +75,7 @@ namespace AzureDNS.ViewModels
                 currentZone = value;
                 OnPropertyChanged();
                 LoadDnsRecordsAsync();
+                RemoveZoneCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -82,6 +85,16 @@ namespace AzureDNS.ViewModels
             set
             {
                 addZoneCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public DelegateCommand RemoveZoneCommand
+        {
+            get { return removeZoneCommand; }
+            set
+            {
+                removeZoneCommand = value;
                 OnPropertyChanged();
             }
         }
@@ -136,8 +149,41 @@ namespace AzureDNS.ViewModels
                 IsEnabled = true;
             }
         }
-        private void OnAddZoneClick()
+        private async void OnAddZoneClick()
         {
+            var wizard = container.Resolve<AddDnsZoneView>();
+            wizard.Owner = Application.Current.MainWindow;
+            if (wizard.ShowDialog() ?? false)
+            {
+                await LoadDnsZonesAsync();
+            }
+        }
+
+        private async void OnRemoveClick()
+        {
+            var message = "Do you want to remove zone '" + CurrentZone.Name + "'?";
+            if (MessageBox.Show(message, "Remove DNS zone", MessageBoxButton.YesNo) == MessageBoxResult.Yes)
+            {
+                try
+                {
+                    Loading = true;
+                    IsEnabled = false;
+
+                    var ps = container.Resolve<AzurePowerShell>();
+                    await ps.RemoveDnsZoneAsync(CurrentZone.Name, CurrentZone.ResourceGroupName);
+
+                    await LoadDnsZonesAsync();
+                }
+                catch (Exception ex)
+                {
+                    logger.Log(ex.Message, Category.Exception, Priority.High);
+                }
+                finally
+                {
+                    Loading = false;
+                    IsEnabled = true;
+                }
+            }
         }
     }
 }

@@ -71,6 +71,30 @@ namespace AzureDNS.Core
                 });
         }
 
+        public async Task<IList<string>> GetAzureResourceGroupsAsync()
+        {
+            return await Task.Run(
+                delegate
+                {
+                    lock (runspace)
+                    {
+                        var pipe = runspace.CreatePipeline();
+                        pipe.Commands.Add(new Command("Get-AzureResourceGroup"));
+
+                        var result = pipe.Invoke();
+                        var list = new List<string>();
+
+                        foreach (var o in result)
+                        {
+                            dynamic item = o.BaseObject;
+                            list.Add(item.ResourceGroupName);
+                        }
+
+                        return list;
+                    }
+                });
+        }
+
         public async Task<IList<DnsZoneViewModel>> GetAzureDnsZoneAsync()
         {
             return await Task.Run(
@@ -250,5 +274,48 @@ namespace AzureDNS.Core
                 });
         }
 
+        public async Task AddDnsZoneAsync(string zoneName, string resourceGroupName)
+        {
+            await Task.Run(
+                delegate
+                {
+                    lock (runspace)
+                    {
+                        var ps = PowerShell.Create();
+                        ps.Runspace = runspace;
+                        ps.AddCommand("New-AzureDnsZone")
+                            .AddParameter("Name", zoneName)
+                            .AddParameter("ResourceGroupName", resourceGroupName)
+                            .Invoke();
+
+                        if (ps.HadErrors)
+                        {
+                            throw new Exception("Can't create DNS zone.");
+                        }
+                    }
+                });
+        }
+        public async Task RemoveDnsZoneAsync(string zoneName, string resourceGroupName)
+        {
+            await Task.Run(
+                delegate
+                {
+                    lock (runspace)
+                    {
+                        var ps = PowerShell.Create();
+                        ps.Runspace = runspace;
+                        ps.AddCommand("Remove-AzureDnsZone")
+                            .AddParameter("Name", zoneName)
+                            .AddParameter("ResourceGroupName", resourceGroupName)
+                            .AddParameter("Force")
+                            .Invoke();
+
+                        if (ps.HadErrors)
+                        {
+                            throw new Exception("Can't remove DNS zone.");
+                        }
+                    }
+                });
+        }
     }
 }
