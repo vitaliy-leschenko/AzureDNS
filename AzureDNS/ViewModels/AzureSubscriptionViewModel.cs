@@ -21,7 +21,7 @@ namespace AzureDNS.ViewModels
         private readonly ILoggerFacade logger;
         private readonly ObservableCollection<SubscriptionViewModel> subscriptions = new ObservableCollection<SubscriptionViewModel>();
         private SubscriptionViewModel current;
-        private bool isEnabled;
+        private bool isEnabled = true;
         private bool loading;
         private ICommand addAccountCommand;
 
@@ -148,6 +148,7 @@ namespace AzureDNS.ViewModels
                 await ps.SelectAzureSubscriptionAsync(Current.SubscriptionId);
 
                 var aggregator = container.Resolve<IEventAggregator>();
+                aggregator.GetEvent<DnsZoneChangedEvent>().Publish(null);
                 aggregator.GetEvent<AzureSubscriptionChangedEvent>().Publish(Current.SubscriptionName);
             }
             finally

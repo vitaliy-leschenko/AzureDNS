@@ -23,8 +23,8 @@ namespace AzureDNS.ViewModels
         private DelegateCommand<string> addRecordCommand;
         private readonly IEventAggregator eventAggregator;
         private readonly ILoggerFacade logger;
-        private bool loading;
-        private bool isEnabled;
+        private bool loading = false;
+        private bool isEnabled = true;
         private DnsZoneViewModel currentZone;
 
         public ObservableCollection<DnsRecordViewModel> Records
