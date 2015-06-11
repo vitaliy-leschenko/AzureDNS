@@ -89,8 +89,6 @@ namespace AzureDNS.ViewModels
 
         private async Task LoadSubscriptionsAsync()
         {
-            logger.Log("Getting AzureSubscription...", Category.Info, Priority.Low);
-
             try
             {
                 Loading = true;

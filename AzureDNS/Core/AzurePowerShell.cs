@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
+using System.Text;
 using System.Threading.Tasks;
 using AzureDNS.ViewModels;
 using Microsoft.Practices.Prism.Logging;
@@ -36,8 +37,10 @@ namespace AzureDNS.Core
                         ps.Runspace = runspace;
                         ps.AddCommand("Select-AzureSubscription")
                             .AddParameter("SubscriptionId", subscriptionId)
-                            .AddParameter("Current", true)
-                            .Invoke();
+                            .AddParameter("Current", true);
+
+                        LogCommand(ps.Commands.Commands);
+                        ps.Invoke();
                     }
                 });
         }
@@ -51,7 +54,10 @@ namespace AzureDNS.Core
                     {
                         var ps = PowerShell.Create();
                         ps.Runspace = runspace;
-                        var items = ps.AddCommand("Get-AzureSubscription").Invoke().ToList();
+                        ps.AddCommand("Get-AzureSubscription");
+
+                        LogCommand(ps.Commands.Commands);
+                        var items = ps.Invoke();
 
                         var result = new List<SubscriptionViewModel>();
                         foreach (var o in items)
@@ -81,6 +87,7 @@ namespace AzureDNS.Core
                         var pipe = runspace.CreatePipeline();
                         pipe.Commands.Add(new Command("Get-AzureResourceGroup"));
 
+                        LogCommand(pipe.Commands);
                         var result = pipe.Invoke();
                         var list = new List<string>();
 
@@ -106,6 +113,7 @@ namespace AzureDNS.Core
                         pipe.Commands.Add(new Command("Get-AzureResourceGroup"));
                         pipe.Commands.Add(new Command("Get-AzureDnsZone"));
 
+                        LogCommand(pipe.Commands);
                         var result = pipe.Invoke();
                         var list = new List<DnsZoneViewModel>();
 
@@ -138,10 +146,12 @@ namespace AzureDNS.Core
                         {
                             var ps = PowerShell.Create();
                             ps.Runspace = runspace;
-                            var items = ps.AddCommand("Get-AzureDnsRecordSet")
+                            ps.AddCommand("Get-AzureDnsRecordSet")
                                 .AddParameter("ResourceGroupName", zone.ResourceGroupName)
-                                .AddParameter("ZoneName", zone.Name)
-                                .Invoke();
+                                .AddParameter("ZoneName", zone.Name);
+
+                            LogCommand(ps.Commands.Commands);
+                            var items = ps.Invoke();
 
                             dynamic records = items[0].BaseObject;
 
@@ -183,7 +193,11 @@ namespace AzureDNS.Core
                     {
                         var ps = PowerShell.Create();
                         ps.Runspace = runspace;
-                        var result = ps.AddCommand("Add-AzureAccount").Invoke();
+                        ps.AddCommand("Add-AzureAccount");
+
+                        LogCommand(ps.Commands.Commands);
+
+                        var result = ps.Invoke();
                         return result.Count != 0;
                     }
                 });
@@ -191,11 +205,15 @@ namespace AzureDNS.Core
 
         public void InitializeAzureResourceManager()
         {
-            var ps = PowerShell.Create();
-            ps.Runspace = runspace;
-            ps.AddCommand("Switch-AzureMode")
-                .AddParameter("Name", "AzureResourceManager")
-                .Invoke();
+            lock (runspace)
+            {
+                var ps = PowerShell.Create();
+                ps.Runspace = runspace;
+                ps.AddCommand("Switch-AzureMode").AddParameter("Name", "AzureResourceManager");
+
+                LogCommand(ps.Commands.Commands);
+                ps.Invoke();
+            }
         }
 
         public async Task RemoveRecordSetAsync(DnsZoneViewModel dnsZone, DnsRecordViewModel record)
@@ -213,8 +231,10 @@ namespace AzureDNS.Core
                         rs.Parameters.Add("ZoneName", dnsZone.Name);
                         rs.Parameters.Add("ResourceGroupName", dnsZone.ResourceGroupName);
                         rs.Parameters.Add("Force");
+
                         pipe.Commands.Add(rs);
 
+                        LogCommand(pipe.Commands);
                         pipe.Invoke();
                     }
                 });
@@ -262,6 +282,7 @@ namespace AzureDNS.Core
                         }
                         pipe.Commands.Add(new Command("Set-AzureDnsRecordSet"));
 
+                        LogCommand(pipe.Commands);
                         pipe.Invoke();
 
                         if (pipe.HadErrors)
@@ -285,8 +306,10 @@ namespace AzureDNS.Core
                         ps.Runspace = runspace;
                         ps.AddCommand("New-AzureDnsZone")
                             .AddParameter("Name", zoneName)
-                            .AddParameter("ResourceGroupName", resourceGroupName)
-                            .Invoke();
+                            .AddParameter("ResourceGroupName", resourceGroupName);
+
+                        LogCommand(ps.Commands.Commands);
+                        ps.Invoke();
 
                         if (ps.HadErrors)
                         {
@@ -295,6 +318,35 @@ namespace AzureDNS.Core
                     }
                 });
         }
+
+        private void LogCommand(CommandCollection commands)
+        {
+            var output = new StringBuilder();
+
+            foreach (var command in commands)
+            {
+                if (output.Length > 0) output.Append(" | ");
+
+                output.Append(command.CommandText);
+                foreach (var parameter in command.Parameters)
+                {
+                    var value = parameter.Value;
+                    if (value is bool)
+                    {
+                        value = "$" + value;
+                    }
+                    else if (value is string)
+                    {
+                        var s = (string) value;
+                        value = "\"" + s.Replace("\"", "\"\"") + "\"";
+                    }
+                    output.Append(" -" + parameter.Name + " " + value);
+                }
+            }
+            
+            logger.Log(output.ToString(), Category.Info, Priority.None);
+        }
+
         public async Task RemoveDnsZoneAsync(string zoneName, string resourceGroupName)
         {
             await Task.Run(
@@ -307,8 +359,10 @@ namespace AzureDNS.Core
                         ps.AddCommand("Remove-AzureDnsZone")
                             .AddParameter("Name", zoneName)
                             .AddParameter("ResourceGroupName", resourceGroupName)
-                            .AddParameter("Force")
-                            .Invoke();
+                            .AddParameter("Force");
+
+                        LogCommand(ps.Commands.Commands);
+                        ps.Invoke();
 
                         if (ps.HadErrors)
                         {

@@ -176,8 +176,6 @@ namespace AzureDNS.ViewModels
                 IsEnabled = false;
                 Loading = true;
 
-                logger.Log("Getting AzureDnsRecords...", Category.Info, Priority.Low);
-
                 var ps = container.Resolve<AzurePowerShell>();
                 var items = await ps.GetAzureDnsRecordsAsync(currentZone);
 
@@ -193,8 +191,6 @@ namespace AzureDNS.ViewModels
             }
             finally
             {
-                logger.Log("Done", Category.Info, Priority.Low);
-
                 Loading = false;
                 IsEnabled = true;
             }

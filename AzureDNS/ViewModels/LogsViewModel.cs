@@ -4,6 +4,7 @@ using System.Windows;
 using AzureDNS.Common;
 using AzureDNS.Events;
 using AzureDNS.Views;
+using Microsoft.Practices.Prism.Logging;
 using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.Unity;
 
@@ -50,7 +51,9 @@ namespace AzureDNS.ViewModels
 
         private void OnLogEvent(LogMessage item)
         {
-            var text = string.Format("[{0}] {1}", item.Category, item.Message);
+            if (item.Category == Category.Debug) return;
+
+            var text = item.Message;
             if (string.IsNullOrEmpty(LogText))
             {
                 LogText = text;

@@ -124,8 +124,6 @@ namespace AzureDNS.ViewModels
 
         private async Task LoadDnsZonesAsync()
         {
-            logger.Log("Getting AzureDnsZones...", Category.Info, Priority.Low);
-
             try
             {
                 Loading = true;
@@ -170,7 +168,12 @@ namespace AzureDNS.ViewModels
                     IsEnabled = false;
 
                     var ps = container.Resolve<AzurePowerShell>();
-                    await ps.RemoveDnsZoneAsync(CurrentZone.Name, CurrentZone.ResourceGroupName);
+
+                    var zoneName = CurrentZone.Name;
+                    var resourceGroupName = CurrentZone.ResourceGroupName;
+
+                    CurrentZone = null;
+                    await ps.RemoveDnsZoneAsync(zoneName, resourceGroupName);
 
                     await LoadDnsZonesAsync();
                 }
