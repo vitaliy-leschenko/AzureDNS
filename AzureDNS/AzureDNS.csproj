@@ -146,7 +146,7 @@
     <Compile Include="Core\SrvDnsRecord.cs" />
     <Compile Include="Core\TxtDnsRecord.cs" />
     <Compile Include="ViewModels\AddDnsZoneViewModel.cs" />
-    <Compile Include="ViewModels\AzureSubscriptionViewModel.cs" />
+    <Compile Include="ViewModels\SubscriptionsViewModel.cs" />
     <Compile Include="ViewModels\DnsAaaaRecordEditorViewModel.cs" />
     <Compile Include="ViewModels\DnsMxRecordEditorViewModel.cs" />
     <Compile Include="ViewModels\DnsTxtRecordEditorViewModel.cs" />
@@ -197,7 +197,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="Views\AzureSubscriptionView.xaml">
+    <Page Include="Views\SubscriptionsView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -247,8 +247,8 @@
     <Compile Include="Views\AddDnsZoneView.xaml.cs">
       <DependentUpon>AddDnsZoneView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\AzureSubscriptionView.xaml.cs">
-      <DependentUpon>AzureSubscriptionView.xaml</DependentUpon>
+    <Compile Include="Views\SubscriptionsView.xaml.cs">
+      <DependentUpon>SubscriptionsView.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\DnsAaaaRecordEditorView.xaml.cs">
       <DependentUpon>DnsAaaaRecordEditorView.xaml</DependentUpon>
@@ -271,18 +271,17 @@
     <Compile Include="Views\DnsZonesView.xaml.cs">
       <DependentUpon>DnsZonesView.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Views\IAzureSubscriptionView.cs" />
-    <Compile Include="Views\IBaseView.cs" />
-    <Compile Include="Views\IDnsAaaaRecordEditor.cs" />
-    <Compile Include="Views\IDnsARecordEditor.cs" />
-    <Compile Include="Views\IDnsCnameRecordEditor.cs" />
-    <Compile Include="Views\IDnsMxRecordEditor.cs" />
-    <Compile Include="Views\IDnsRecordEditor.cs" />
-    <Compile Include="Views\IDnsRecordsView.cs" />
-    <Compile Include="Views\IDnsTxtRecordEditor.cs" />
-    <Compile Include="Views\IDnsZonesView.cs" />
-    <Compile Include="Views\ILogView.cs" />
-    <Compile Include="Views\ISubscriptionsView.cs" />
+    <Compile Include="Views\Interfaces\ISubscriptionsView.cs" />
+    <Compile Include="Views\Interfaces\IBaseView.cs" />
+    <Compile Include="Views\Interfaces\IDnsAaaaRecordEditor.cs" />
+    <Compile Include="Views\Interfaces\IDnsARecordEditor.cs" />
+    <Compile Include="Views\Interfaces\IDnsCnameRecordEditor.cs" />
+    <Compile Include="Views\Interfaces\IDnsMxRecordEditor.cs" />
+    <Compile Include="Views\Interfaces\IDnsRecordEditor.cs" />
+    <Compile Include="Views\Interfaces\IDnsRecordsView.cs" />
+    <Compile Include="Views\Interfaces\IDnsTxtRecordEditor.cs" />
+    <Compile Include="Views\Interfaces\IDnsZonesView.cs" />
+    <Compile Include="Views\Interfaces\ILogView.cs" />
     <Compile Include="Views\LogsView.xaml.cs">
       <DependentUpon>LogsView.xaml</DependentUpon>
     </Compile>

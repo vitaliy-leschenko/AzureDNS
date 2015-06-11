@@ -5,7 +5,7 @@ using System.Windows;
 using AzureDNS.Common;
 using AzureDNS.Core;
 using AzureDNS.Events;
-using AzureDNS.Views;
+using AzureDNS.Views.Interfaces;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Logging;
 using Microsoft.Practices.Prism.PubSubEvents;

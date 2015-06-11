@@ -6,7 +6,7 @@ using System.Windows.Input;
 using AzureDNS.Common;
 using AzureDNS.Core;
 using AzureDNS.Events;
-using AzureDNS.Views;
+using AzureDNS.Views.Interfaces;
 using Microsoft.Practices.Prism.Commands;
 using Microsoft.Practices.Prism.Logging;
 using Microsoft.Practices.Prism.PubSubEvents;
@@ -14,9 +14,9 @@ using Microsoft.Practices.Unity;
 
 namespace AzureDNS.ViewModels
 {
-    public class AzureSubscriptionViewModel: BaseViewModel
+    public class SubscriptionsViewModel: BaseViewModel
     {
-        private readonly IAzureSubscriptionView view;
+        private readonly ISubscriptionsView view;
         private readonly IUnityContainer container;
         private readonly ILoggerFacade logger;
         private readonly ObservableCollection<SubscriptionViewModel> subscriptions = new ObservableCollection<SubscriptionViewModel>();
@@ -25,7 +25,7 @@ namespace AzureDNS.ViewModels
         private bool loading;
         private ICommand addAccountCommand;
 
-        public AzureSubscriptionViewModel(IAzureSubscriptionView view, IUnityContainer container)
+        public SubscriptionsViewModel(ISubscriptionsView view, IUnityContainer container)
         {
             this.view = view;
             this.container = container;

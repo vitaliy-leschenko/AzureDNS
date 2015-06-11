@@ -3,8 +3,8 @@ using System.Windows;
 using AzureDNS.Core;
 using AzureDNS.Core.DnsReaders;
 using AzureDNS.Views;
+using AzureDNS.Views.Interfaces;
 using Microsoft.Practices.Prism.Logging;
-using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.Prism.Regions;
 using Microsoft.Practices.Prism.UnityExtensions;
 using Microsoft.Practices.Unity;
@@ -38,7 +38,7 @@ namespace AzureDNS.Common
 
             var manager = Container.Resolve<IRegionManager>();
             manager.RegisterViewWithRegion("Logs", () => Container.Resolve<LogsView>());
-            manager.RegisterViewWithRegion("Subscriptions", () => Container.Resolve<AzureSubscriptionView>());
+            manager.RegisterViewWithRegion("Subscriptions", () => Container.Resolve<SubscriptionsView>());
             manager.RegisterViewWithRegion("DnsZones", () => Container.Resolve<DnsZonesView>());
             manager.RegisterViewWithRegion("DnsRecords", () => Container.Resolve<DnsRecordsView>());
 

@@ -1,4 +1,4 @@
-namespace AzureDNS.Views
+namespace AzureDNS.Views.Interfaces
 {
     public interface IDnsZonesView: IBaseView
     {

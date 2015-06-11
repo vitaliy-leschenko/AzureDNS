@@ -1,5 +1,6 @@
 ﻿using System.Windows;
 using AzureDNS.ViewModels;
+using AzureDNS.Views.Interfaces;
 using Microsoft.Practices.Unity;
 
 namespace AzureDNS.Views

@@ -1,9 +1,8 @@
 ﻿using System;
-using System.Collections.ObjectModel;
 using System.Windows;
 using AzureDNS.Common;
 using AzureDNS.Events;
-using AzureDNS.Views;
+using AzureDNS.Views.Interfaces;
 using Microsoft.Practices.Prism.Logging;
 using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.Unity;

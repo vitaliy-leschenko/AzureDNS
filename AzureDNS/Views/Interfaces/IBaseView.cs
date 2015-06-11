@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace AzureDNS.Views
+namespace AzureDNS.Views.Interfaces
 {
     public interface IBaseView
     {

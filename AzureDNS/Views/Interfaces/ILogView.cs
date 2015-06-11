@@ -1,6 +1,4 @@
-using AzureDNS.Events;
-
-namespace AzureDNS.Views
+namespace AzureDNS.Views.Interfaces
 {
     public interface ILogView: IBaseView
     {

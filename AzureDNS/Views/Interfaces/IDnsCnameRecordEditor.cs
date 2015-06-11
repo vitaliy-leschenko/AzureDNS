@@ -1,9 +1,8 @@
-namespace AzureDNS.Views
+namespace AzureDNS.Views.Interfaces
 {
     public interface IDnsCnameRecordEditor : IDnsRecordEditor
     {
         void FocusHostName();
         void FocusCname();
-        void Complete();
     }
 }
