@@ -11,7 +11,7 @@
         <TextBlock Text="Host:"/>
         <TextBox x:Name="hostName" Text="{Binding Path=HostName, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}" IsReadOnly="{Binding Path=EditMode}" />
 
-        <TextBlock Text="FQDN:" Margin="0,5,0,0" />
+        <TextBlock Text="Fully qualified domain name (FQDN):" Margin="0,5,0,0" />
         <TextBox IsReadOnly="True" Text="{Binding Path=FQDN, Mode=OneWay}" />
 
         <TextBlock Text="IP addresses (use ; to split addresses if needed):" Margin="0,5,0,0" />

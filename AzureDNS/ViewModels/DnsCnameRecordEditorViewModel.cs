@@ -11,15 +11,15 @@ using Microsoft.Practices.Unity;
 
 namespace AzureDNS.ViewModels
 {
-    public class DnsAaaaRecordEditorViewModel: BaseViewModel
+    public class DnsCnameRecordEditorViewModel: BaseViewModel
     {
-        private readonly IDnsAaaaRecordEditor view;
+        private readonly IDnsCnameRecordEditor view;
         private readonly IUnityContainer container;
         private bool editMode;
         private DnsZoneViewModel dnsZone;
         private DnsRecordViewModel dnsRecord;
         private string hostName = string.Empty;
-        private string ip = string.Empty;
+        private string cname = string.Empty;
         private DelegateCommand saveCommand;
         private DelegateCommand deleteCommand;
         private bool isEnabled = true;
@@ -64,7 +64,12 @@ namespace AzureDNS.ViewModels
                 dnsRecord = value;
                 OnPropertyChanged();
                 HostName = value.Name;
-                IP = string.Join(";", value.Records.OfType<AaaaDnsRecord>().Select(t => t.Ipv6Address));
+
+                var item = value.Records.OfType<CnameDnsRecord>().FirstOrDefault();
+                if (item != null)
+                {
+                    Cname = item.Cname;
+                }
             }
         }
 
@@ -98,12 +103,12 @@ namespace AzureDNS.ViewModels
             }
         }
 
-        public string IP
+        public string Cname
         {
-            get { return ip; }
+            get { return cname; }
             set
             {
-                ip = value;
+                cname = value;
                 OnPropertyChanged();
             }
         }
@@ -128,7 +133,7 @@ namespace AzureDNS.ViewModels
             }
         }
 
-        public DnsAaaaRecordEditorViewModel(IDnsAaaaRecordEditor view, IUnityContainer container)
+        public DnsCnameRecordEditorViewModel(IDnsCnameRecordEditor view, IUnityContainer container)
         {
             this.view = view;
             this.container = container;
@@ -146,6 +151,11 @@ namespace AzureDNS.ViewModels
                     view.FocusHostName();
                     return;
                 }
+                if (string.IsNullOrWhiteSpace(Cname))
+                {
+                    view.FocusCname();
+                    return;
+                }
                 var name = HostName.Trim();
 
                 IsEnabled = false;
@@ -154,14 +164,12 @@ namespace AzureDNS.ViewModels
 
                 var options = new Dictionary<string, object> {{"Ttl", 300}};
 
-                var addresses = IP.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries)
-                    .Where(t => !string.IsNullOrWhiteSpace(t))
-                    .Select(t => IPAddress.Parse(t.Trim()))
-                    .Where(t => t.GetAddressBytes().Length > 4)
-                    .ToArray();
-                var records = addresses.Select(t => new Dictionary<string, string> { { "Ipv6Address", t.ToString() } }).ToList();
+                var records = new List<Dictionary<string, string>>
+                {
+                    new Dictionary<string, string> { { "Cname", cname } }
+                };
 
-                await ps.AddDnsRecordAsync(dnsZone, name, "AAAA", options, records, EditMode);
+                await ps.AddDnsRecordAsync(dnsZone, name, "CNAME", options, records, EditMode);
                 view.Complete();
             }
             catch (Exception ex)

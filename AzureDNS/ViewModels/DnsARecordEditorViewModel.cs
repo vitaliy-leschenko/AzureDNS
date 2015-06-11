@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Windows;
 using AzureDNS.Common;
 using AzureDNS.Core;
@@ -153,11 +154,13 @@ namespace AzureDNS.ViewModels
 
                 var options = new Dictionary<string, object> {{"Ttl", 300}};
 
-                var addresses = IP.Split(new[] { ";" }, StringSplitOptions.RemoveEmptyEntries)
+                var addresses = IP.Split(new[] {";"}, StringSplitOptions.RemoveEmptyEntries)
                     .Where(t => !string.IsNullOrWhiteSpace(t))
-                    .Select(t => t.Trim())
+                    .Select(t => IPAddress.Parse(t.Trim()))
+                    .Where(t => t.GetAddressBytes().Length == 4)
                     .ToArray();
-                var records = addresses.Select(t => new Dictionary<string, string> { { "Ipv4Address", t } }).ToList();
+
+                var records = addresses.Select(t => new Dictionary<string, string> { { "Ipv4Address", t.ToString() } }).ToList();
 
                 await ps.AddDnsRecordAsync(dnsZone, name, "A", options, records, EditMode);
                 view.Complete();
