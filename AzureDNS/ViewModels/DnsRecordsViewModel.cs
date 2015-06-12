@@ -107,7 +107,7 @@ namespace AzureDNS.ViewModels
 
             AddRecordCommand = new DelegateCommand<string>(OnAddDnsRecordClick, t => currentZone != null);
             EditRecordCommand = new DelegateCommand<DnsRecordViewModel>(OnEditDnsRecordClick, t => currentZone != null && t != null && t.AllowEdit);
-            RemoveRecordCommand = new DelegateCommand<DnsRecordViewModel>(OnRemoveClick, t => currentZone != null && t != null && t.AllowEdit);
+            RemoveRecordCommand = new DelegateCommand<DnsRecordViewModel>(OnRemoveClick, t => currentZone != null && t != null && t.AllowDelete);
         }
 
         private async void OnRemoveClick(DnsRecordViewModel record)

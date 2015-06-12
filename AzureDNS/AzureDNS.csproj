@@ -26,7 +26,7 @@
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>http://filestorage.vitaliy.org/9d4196ab-1c3c-4efb-b065-b643384f1832/azuredns/</InstallUrl>
-    <ApplicationRevision>3</ApplicationRevision>
+    <ApplicationRevision>4</ApplicationRevision>
     <ApplicationVersion>1.0.0.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -159,6 +159,7 @@
     <Compile Include="Core\SrvDnsRecord.cs" />
     <Compile Include="Core\TxtDnsRecord.cs" />
     <Compile Include="ViewModels\AddDnsZoneViewModel.cs" />
+    <Compile Include="ViewModels\DnsNsRecordEditorViewModel.cs" />
     <Compile Include="ViewModels\SubscriptionsViewModel.cs" />
     <Compile Include="ViewModels\DnsAaaaRecordEditorViewModel.cs" />
     <Compile Include="ViewModels\DnsMxRecordEditorViewModel.cs" />
@@ -205,6 +206,10 @@
     <Page Include="Views\AddDnsZoneView.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DnsNsRecordEditorView.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\SubscriptionsView.xaml">
       <SubType>Designer</SubType>
@@ -256,6 +261,10 @@
     <Compile Include="Views\AddDnsZoneView.xaml.cs">
       <DependentUpon>AddDnsZoneView.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Views\DnsNsRecordEditorView.xaml.cs">
+      <DependentUpon>DnsNsRecordEditorView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Interfaces\IDnsNsRecordEditor.cs" />
     <Compile Include="Views\SubscriptionsView.xaml.cs">
       <DependentUpon>SubscriptionsView.xaml</DependentUpon>
     </Compile>

@@ -33,6 +33,19 @@ namespace AzureDNS.ViewModels
                        RecordType == RecordType.AAAA ||
                        RecordType == RecordType.CNAME ||
                        RecordType == RecordType.MX ||
+                       RecordType == RecordType.TXT ||
+                       RecordType == RecordType.NS;
+            }
+        }
+
+        public bool AllowDelete
+        {
+            get
+            {
+                return RecordType == RecordType.A ||
+                       RecordType == RecordType.AAAA ||
+                       RecordType == RecordType.CNAME ||
+                       RecordType == RecordType.MX ||
                        RecordType == RecordType.TXT;
             }
         }
