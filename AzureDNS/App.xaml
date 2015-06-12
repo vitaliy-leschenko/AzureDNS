@@ -5,7 +5,7 @@
              xmlns:controls="clr-namespace:AzureDNS.Controls">
     <Application.Resources>
         <ResourceDictionary>
-            <system:String x:Key="appTitle">Azure DNS</system:String>
+            <system:String x:Key="appTitle">Microsoft Azure DNS</system:String>
             <BooleanToVisibilityConverter x:Key="PositiveToVisibilityConverter" />
             <controls:NegativeToVisibilityConverter x:Key="NegativeToVisibilityConverter"/>
             

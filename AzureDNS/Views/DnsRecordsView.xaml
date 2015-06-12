@@ -11,24 +11,24 @@
         <Border Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="1,0,1,1"/>
         <DockPanel Margin="0,0,0,1">
             <Grid DockPanel.Dock="Top" Background="White" >
-                <Border Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="0,1,0,1" />
-                <DockPanel>
-                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Left">
-                        <Button Margin="0,0,0,0" Command="{Binding Path=EditRecordCommand}" CommandParameter="{Binding Path=CurrentRecord}">
+                <Border Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="1,1,0,1" />
+                <DockPanel Margin="1,0,0,0">
+                    <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
+                        <Button Margin="0,0,0,0" Command="{Binding Path=EditRecordCommand}" CommandParameter="{Binding Path=CurrentRecord}" ToolTip="Edit record">
                             <Image Source="/Assets/edit.png" Width="16" Height="16"/>
                         </Button>
-                        <Button Command="{Binding Path=RemoveRecordCommand}" CommandParameter="{Binding Path=CurrentRecord}" Margin="-1,0,0,0">
+                        <Button Command="{Binding Path=RemoveRecordCommand}" CommandParameter="{Binding Path=CurrentRecord}" Margin="-1,0,0,0" ToolTip="Remove record">
                             <Image Source="/Assets/delete.png" Width="16" Height="16"/>
                         </Button>
                     </StackPanel>
-                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                        <TextBlock Text="New record:" VerticalAlignment="Center" Margin="0,0,5,0" />
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" DockPanel.Dock="Right" Margin="0,0,10,0">
                         <Button Width="60" Content="A" Margin="-1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="A" />
                         <Button Width="60" Content="AAAA" Margin="-1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="AAAA" />
                         <Button Width="60" Content="CNAME" Margin="-1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="CNAME" />
                         <Button Width="60" Content="MX" Margin="-1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="MX" />
                         <Button Width="60" Content="TXT" Margin="-1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="TXT" />
                     </StackPanel>
+                    <TextBlock Text="Record:" VerticalAlignment="Center" Margin="5,0,0,0" />
                 </DockPanel>
             </Grid>
             <ProgressBar DockPanel.Dock="Top" IsIndeterminate="True" Visibility="{Binding Path=Loading, Converter={StaticResource PositiveToVisibilityConverter}}" Margin="0,2,0,0" />
