@@ -2,6 +2,7 @@
 using System.Windows;
 using AzureDNS.Core;
 using AzureDNS.Core.DnsReaders;
+using AzureDNS.Core.PS;
 using AzureDNS.Views;
 using AzureDNS.Views.Interfaces;
 using Microsoft.Practices.Prism.Logging;
@@ -70,8 +71,9 @@ namespace AzureDNS.Common
                 .RegisterType<IDnsRecordEditor, DnsTxtRecordEditorView>("TXT")
                 .RegisterType<IDnsRecordEditor, DnsMxRecordEditorView>("MX");
 
+            var host = Container.Resolve<AppPSHost>();
             var iss = InitialSessionState.CreateDefault();
-            var rs = RunspaceFactory.CreateRunspace(iss);
+            var rs = RunspaceFactory.CreateRunspace(host, iss);
             rs.Open();
 
             Container.RegisterInstance(rs);
