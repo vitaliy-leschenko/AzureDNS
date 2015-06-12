@@ -8,6 +8,7 @@ using Microsoft.Practices.Prism.Logging;
 using Microsoft.Practices.Prism.Regions;
 using Microsoft.Practices.Prism.UnityExtensions;
 using Microsoft.Practices.Unity;
+using System.Management.Automation;
 
 namespace AzureDNS.Common
 {
@@ -33,8 +34,15 @@ namespace AzureDNS.Common
 
         protected override DependencyObject CreateShell()
         {
-            var ps = container.Resolve<AzurePowerShell>();
-            ps.InitializeAzureResourceManager();
+            try
+            {
+                var ps = container.Resolve<AzurePowerShell>();
+                ps.InitializeAzureResourceManager();
+            }
+            catch(CommandNotFoundException)
+            {
+                return Container.Resolve<FailView>();
+            }
 
             var manager = Container.Resolve<IRegionManager>();
             manager.RegisterViewWithRegion("Logs", () => Container.Resolve<LogsView>());

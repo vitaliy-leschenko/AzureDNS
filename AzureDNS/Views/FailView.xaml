@@ -1,0 +1,11 @@
+﻿<Window x:Class="AzureDNS.Views.FailView"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="{StaticResource appTitle}" SizeToContent="WidthAndHeight" WindowStartupLocation="CenterScreen" ResizeMode="NoResize" >
+    <Grid>
+        <StackPanel Margin="5">
+            <TextBlock Text="Please install Microsoft Azure PowerShell." Margin="25,10" />
+            <Button Content="Close" HorizontalAlignment="Center" Click="OnCloseClick" Width="60" IsDefault="True" />
+        </StackPanel>
+    </Grid>
+</Window>
