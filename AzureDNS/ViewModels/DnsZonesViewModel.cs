@@ -28,6 +28,7 @@ namespace AzureDNS.ViewModels
         private DelegateCommand addZoneCommand;
         private DelegateCommand removeZoneCommand;
         private string currentSubscription;
+        private DelegateCommand refreshZonesCommand;
 
         public DnsZonesViewModel(IDnsZonesView view, IUnityContainer container)
         {
@@ -41,6 +42,7 @@ namespace AzureDNS.ViewModels
 
             AddZoneCommand = new DelegateCommand(OnAddZoneClick, () => !string.IsNullOrEmpty(currentSubscription));
             RemoveZoneCommand = new DelegateCommand(OnRemoveClick, () => CurrentZone != null);
+            RefreshZonesCommand = new DelegateCommand(OnRefreshClick, () => !string.IsNullOrEmpty(currentSubscription) && !Loading);
         }
 
         public bool IsEnabled
@@ -60,6 +62,7 @@ namespace AzureDNS.ViewModels
             {
                 loading = value;
                 OnPropertyChanged();
+                RefreshZonesCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -73,10 +76,13 @@ namespace AzureDNS.ViewModels
             get { return currentZone; }
             set
             {
-                currentZone = value;
-                OnPropertyChanged();
-                LoadDnsRecordsAsync();
-                RemoveZoneCommand.RaiseCanExecuteChanged();
+                if (currentZone != value)
+                {
+                    currentZone = value;
+                    OnPropertyChanged();
+                    LoadDnsRecordsAsync();
+                    RemoveZoneCommand.RaiseCanExecuteChanged();
+                }
             }
         }
 
@@ -100,6 +106,16 @@ namespace AzureDNS.ViewModels
             }
         }
 
+        public DelegateCommand RefreshZonesCommand
+        {
+            get { return refreshZonesCommand; }
+            set
+            {
+                refreshZonesCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
         private void OnLoaded(object sender, RoutedEventArgs e)
         {
             eventAggregator.GetEvent<AzureSubscriptionChangedEvent>().Subscribe(OnAzureSubscriptionChange, ThreadOption.UIThread);
@@ -114,6 +130,7 @@ namespace AzureDNS.ViewModels
         {
             currentSubscription = subscription;
             AddZoneCommand.RaiseCanExecuteChanged();
+            RefreshZonesCommand.RaiseCanExecuteChanged();
             await LoadDnsZonesAsync();
         }
 
@@ -130,9 +147,14 @@ namespace AzureDNS.ViewModels
                 Loading = true;
                 IsEnabled = false;
 
+                CurrentZone = null;
+                if (string.IsNullOrEmpty(currentSubscription)) return;
+
                 var ps = container.Resolve<AzurePowerShell>();
                 var items = await ps.GetAzureDnsZoneAsync();
+
                 Zones.Clear();
+                if (string.IsNullOrEmpty(currentSubscription)) return;
                 foreach (var item in items)
                 {
                     Zones.Add(item);
@@ -188,6 +210,12 @@ namespace AzureDNS.ViewModels
                     IsEnabled = true;
                 }
             }
+        }
+
+        private async void OnRefreshClick()
+        {
+            CurrentZone = null;
+            await LoadDnsZonesAsync();
         }
     }
 }

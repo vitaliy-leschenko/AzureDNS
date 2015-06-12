@@ -17,17 +17,20 @@
                         <Button Command="{Binding Path=RemoveZoneCommand}" Margin="0,0,-1,0" ToolTip="Remove DNS zone">
                             <Image Source="/Assets/delete.png" Width="16" Height="16"/>
                         </Button>
+                        <Button Command="{Binding Path=RefreshZonesCommand}" Margin="0,0,-1,0" ToolTip="Reload DNS zones">
+                            <Image Source="/Assets/refresh.png" Width="16" Height="16"/>
+                        </Button>
                     </StackPanel>
                     <Border Padding="4,2" Height="24">
                         <TextBlock Text="Zones:" VerticalAlignment="Center" />
                     </Border>
                 </DockPanel>
             </Border>
-            <ProgressBar DockPanel.Dock="Top" IsIndeterminate="True" Visibility="{Binding Path=Loading, Converter={StaticResource PositiveToVisibilityConverter}}" Margin="0,2,0,0" />
+            <ProgressBar DockPanel.Dock="Top" IsIndeterminate="True" Visibility="{Binding Path=Loading, Converter={StaticResource PositiveToVisibilityConverter}}" Margin="2,2,2,0" Height="8" />
             <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                       Visibility="{Binding Path=Loading, Converter={StaticResource NegativeToVisibilityConverter}}"
-                          ItemsSource="{Binding Path=Zones}" BorderThickness="0"
-                          SelectedItem="{Binding Path=CurrentZone, Mode=TwoWay}">
+                      ItemsSource="{Binding Path=Zones}" BorderThickness="0" SelectionMode="Single"
+                      SelectedItem="{Binding Path=CurrentZone, Mode=TwoWay}">
                 <ListView.ItemTemplate>
                     <DataTemplate>
                         <TextBlock Text="{Binding Path=Name}" TextTrimming="CharacterEllipsis" />

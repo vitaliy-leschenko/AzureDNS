@@ -27,6 +27,7 @@ namespace AzureDNS.ViewModels
         private bool isEnabled = true;
         private DnsZoneViewModel currentZone;
         private DelegateCommand<DnsRecordViewModel> removeRecordCommand;
+        private DelegateCommand refreshCommand;
 
         public ObservableCollection<DnsRecordViewModel> Records
         {
@@ -65,6 +66,16 @@ namespace AzureDNS.ViewModels
             }
         }
 
+        public DelegateCommand RefreshCommand
+        {
+            get { return refreshCommand; }
+            set
+            {
+                refreshCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
         public DelegateCommand<string> AddRecordCommand
         {
             get { return addRecordCommand; }
@@ -82,6 +93,10 @@ namespace AzureDNS.ViewModels
             {
                 loading = value;
                 OnPropertyChanged();
+                AddRecordCommand.RaiseCanExecuteChanged();
+                EditRecordCommand.RaiseCanExecuteChanged();
+                RemoveRecordCommand.RaiseCanExecuteChanged();
+                RefreshCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -105,9 +120,15 @@ namespace AzureDNS.ViewModels
             view.Loaded += OnLoaded;
             view.Unloaded += OnUnloaded;
 
-            AddRecordCommand = new DelegateCommand<string>(OnAddDnsRecordClick, t => currentZone != null);
-            EditRecordCommand = new DelegateCommand<DnsRecordViewModel>(OnEditDnsRecordClick, t => currentZone != null && t != null && t.AllowEdit);
-            RemoveRecordCommand = new DelegateCommand<DnsRecordViewModel>(OnRemoveClick, t => currentZone != null && t != null && t.AllowDelete);
+            AddRecordCommand = new DelegateCommand<string>(OnAddDnsRecordClick, t => currentZone != null && !Loading);
+            EditRecordCommand = new DelegateCommand<DnsRecordViewModel>(OnEditDnsRecordClick, t => currentZone != null && t != null && t.AllowEdit && !Loading);
+            RemoveRecordCommand = new DelegateCommand<DnsRecordViewModel>(OnRemoveClick, t => currentZone != null && t != null && t.AllowDelete && !Loading);
+            RefreshCommand = new DelegateCommand(OnRefreshClick, () => currentZone != null && !Loading);
+        }
+
+        private async void OnRefreshClick()
+        {
+            await LoadDnsRecordsAsync();
         }
 
         private async void OnRemoveClick(DnsRecordViewModel record)
@@ -198,6 +219,9 @@ namespace AzureDNS.ViewModels
 
             if (zone == null)
             {
+                Loading = false;
+                IsEnabled = true;
+
                 Records.Clear();
                 return;
             }
@@ -216,6 +240,8 @@ namespace AzureDNS.ViewModels
                 var items = await ps.GetAzureDnsRecordsAsync(currentZone);
 
                 Records.Clear();
+
+                if (currentZone == null) return;
                 foreach (var item in items)
                 {
                     Records.Add(item);

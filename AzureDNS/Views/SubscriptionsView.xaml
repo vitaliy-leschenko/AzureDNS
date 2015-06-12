@@ -11,17 +11,23 @@
             <Border DockPanel.Dock="Top" Background="White" BorderBrush="{StaticResource DefaultBrush}" BorderThickness="0,0,0,1">
                 <DockPanel Margin="0,-1">
                     <StackPanel Orientation="Horizontal" DockPanel.Dock="Right">
-                        <Button Content="Add account" Margin="0,0,-1,0" Command="{Binding Path=AddAccountCommand}" />
+                        <Button Command="{Binding Path=AddAccountCommand}" Margin="0,0,-1,0" ToolTip="Add subscriptions from account">
+                            <Image Source="/Assets/add.png" Width="16" Height="16"/>
+                        </Button>
+                        <Button Command="{Binding Path=RefreshCommand}" Margin="0,0,-1,0" ToolTip="Reload subscriptions">
+                            <Image Source="/Assets/refresh.png" Width="16" Height="16"/>
+                        </Button>
                     </StackPanel>
                     <Border Padding="4,2" Height="24">
                         <TextBlock Text="Subscriptions:" VerticalAlignment="Center" />
                     </Border>
                 </DockPanel>
             </Border>
-            <ProgressBar DockPanel.Dock="Top" IsIndeterminate="True" Visibility="{Binding Path=Loading, Converter={StaticResource PositiveToVisibilityConverter}}" Margin="0,2,0,0" />
+            <ProgressBar DockPanel.Dock="Top" IsIndeterminate="True" Visibility="{Binding Path=Loading, Converter={StaticResource PositiveToVisibilityConverter}}" Margin="2,2,2,0" Height="8" />
             <ListView ScrollViewer.HorizontalScrollBarVisibility="Disabled" 
                       Visibility="{Binding Path=Loading, Converter={StaticResource NegativeToVisibilityConverter}}"
                       ItemsSource="{Binding Path=Subscriptions}" BorderThickness="0"
+                      SelectionMode="Single"
                       SelectedItem="{Binding Path=Current, Mode=TwoWay}">
                 <ListView.ItemTemplate>
                     <DataTemplate>

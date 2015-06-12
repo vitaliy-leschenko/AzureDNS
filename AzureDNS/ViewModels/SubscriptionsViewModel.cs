@@ -8,7 +8,6 @@ using AzureDNS.Core;
 using AzureDNS.Events;
 using AzureDNS.Views.Interfaces;
 using Microsoft.Practices.Prism.Commands;
-using Microsoft.Practices.Prism.Logging;
 using Microsoft.Practices.Prism.PubSubEvents;
 using Microsoft.Practices.Unity;
 
@@ -18,22 +17,22 @@ namespace AzureDNS.ViewModels
     {
         private readonly ISubscriptionsView view;
         private readonly IUnityContainer container;
-        private readonly ILoggerFacade logger;
         private readonly ObservableCollection<SubscriptionViewModel> subscriptions = new ObservableCollection<SubscriptionViewModel>();
         private SubscriptionViewModel current;
         private bool isEnabled = true;
         private bool loading;
-        private ICommand addAccountCommand;
+        private DelegateCommand addAccountCommand;
+        private DelegateCommand refreshCommand;
 
         public SubscriptionsViewModel(ISubscriptionsView view, IUnityContainer container)
         {
             this.view = view;
             this.container = container;
-            logger = container.Resolve<ILoggerFacade>();
 
             view.Loaded += OnLoaded;
 
-            AddAccountCommand = new DelegateCommand(OnAddAccountClick);
+            AddAccountCommand = new DelegateCommand(OnAddAccountClick, () => !Loading);
+            RefreshCommand = new DelegateCommand(OnRefreshClick, () => !Loading);
         }
 
         public ObservableCollection<SubscriptionViewModel> Subscriptions
@@ -48,6 +47,8 @@ namespace AzureDNS.ViewModels
             {
                 loading = value;
                 OnPropertyChanged();
+                AddAccountCommand.RaiseCanExecuteChanged();
+                RefreshCommand.RaiseCanExecuteChanged();
             }
         }
 
@@ -72,12 +73,22 @@ namespace AzureDNS.ViewModels
             }
         }
 
-        public ICommand AddAccountCommand
+        public DelegateCommand AddAccountCommand
         {
             get { return addAccountCommand; }
             set
             {
                 addAccountCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public DelegateCommand RefreshCommand
+        {
+            get { return refreshCommand; }
+            set
+            {
+                refreshCommand = value;
                 OnPropertyChanged();
             }
         }
@@ -133,20 +144,37 @@ namespace AzureDNS.ViewModels
             }
         }
 
+        private async void OnRefreshClick()
+        {
+            Current = null;
+            await LoadSubscriptionsAsync();
+        }
+
         private async void LoadDnsZonesAsync()
         {
-            if (Current == null) return;
-
             try
             {
                 Loading = true;
                 IsEnabled = false;
 
+                var aggregator = container.Resolve<IEventAggregator>();
+                aggregator.GetEvent<DnsZoneChangedEvent>().Publish(null);
+
+                if (Current == null)
+                {
+                    aggregator.GetEvent<AzureSubscriptionChangedEvent>().Publish(null);
+                    return;
+                }
+
                 var ps = container.Resolve<AzurePowerShell>();
                 await ps.SelectAzureSubscriptionAsync(Current.SubscriptionId);
 
-                var aggregator = container.Resolve<IEventAggregator>();
-                aggregator.GetEvent<DnsZoneChangedEvent>().Publish(null);
+                if (Current == null)
+                {
+                    aggregator.GetEvent<AzureSubscriptionChangedEvent>().Publish(null);
+                    return;
+                }
+
                 aggregator.GetEvent<AzureSubscriptionChangedEvent>().Publish(Current.SubscriptionName);
             }
             finally
