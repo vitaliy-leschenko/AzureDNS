@@ -13,7 +13,6 @@
                 <ResourceDictionary Source="Resources\Brushes.xaml" />
                 <ResourceDictionary Source="Resources\Button.xaml" />
                 <ResourceDictionary Source="Resources\Checkbox.xaml" />
-                <ResourceDictionary Source="Resources\ComboBox.xaml" />
                 <ResourceDictionary Source="Resources\ListView.xaml" />
                 <ResourceDictionary Source="Resources\Menu.xaml" />
                 <ResourceDictionary Source="Resources\Radiobutton.xaml" />
