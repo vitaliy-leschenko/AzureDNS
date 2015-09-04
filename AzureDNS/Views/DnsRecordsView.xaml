@@ -30,6 +30,7 @@
                         <Button Width="60" Content="CNAME" Margin="-1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="CNAME" />
                         <Button Width="60" Content="MX" Margin="-1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="MX" />
                         <Button Width="60" Content="TXT" Margin="-1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="TXT" />
+                        <Button Width="60" Content="NS" Margin="-1,0,0,0" Command="{Binding Path=AddRecordCommand}" CommandParameter="NS" />
                     </StackPanel>
                     <TextBlock Text="Record:" VerticalAlignment="Center" Margin="5,0,0,0" />
                 </DockPanel>

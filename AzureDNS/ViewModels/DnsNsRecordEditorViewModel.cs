@@ -21,6 +21,8 @@ namespace AzureDNS.ViewModels
         private string hostName = string.Empty;
         private string ns = string.Empty;
         private bool isEnabled = true;
+        private DelegateCommand saveCommand;
+        private DelegateCommand deleteCommand;
 
         public bool IsEnabled
         {
@@ -105,10 +107,90 @@ namespace AzureDNS.ViewModels
             }
         }
 
+        public DelegateCommand SaveCommand
+        {
+            get { return saveCommand; }
+            set
+            {
+                saveCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
+        public DelegateCommand DeleteCommand
+        {
+            get { return deleteCommand; }
+            set
+            {
+                deleteCommand = value;
+                OnPropertyChanged();
+            }
+        }
+
         public DnsNsRecordEditorViewModel(IDnsNsRecordEditor view, IUnityContainer container)
         {
             this.view = view;
             this.container = container;
+
+            SaveCommand = new DelegateCommand(OnSaveClick);
+            DeleteCommand = new DelegateCommand(OnDeleteClick, () => EditMode && HostName != "@");
+        }
+
+        private async void OnSaveClick()
+        {
+            try
+            {
+                if (string.IsNullOrWhiteSpace(HostName))
+                {
+                    view.FocusHostName();
+                    return;
+                }
+                var name = HostName.Trim();
+
+                IsEnabled = false;
+
+                var ps = container.Resolve<AzurePowerShell>();
+
+                var options = new Dictionary<string, object> { { "Ttl", 300 } };
+
+                var hosts = NS.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries)
+                    .Select(t => t.Trim())
+                    .Where(t => !string.IsNullOrWhiteSpace(t))
+                    .ToArray();
+
+                var records = hosts.Select(t => new Dictionary<string, string> { { "Nsdname", t.ToString() } }).ToList();
+
+                await ps.AddDnsRecordAsync(dnsZone, name, "NS", options, records, EditMode);
+                view.Complete();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                IsEnabled = true;
+            }
+        }
+
+        private async void OnDeleteClick()
+        {
+            try
+            {
+                IsEnabled = false;
+
+                var ps = container.Resolve<AzurePowerShell>();
+                await ps.RemoveRecordSetAsync(dnsZone, dnsRecord);
+                view.Complete();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(ex.Message);
+            }
+            finally
+            {
+                IsEnabled = true;
+            }
         }
     }
 }

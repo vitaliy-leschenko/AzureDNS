@@ -40,6 +40,11 @@ namespace AzureDNS.Views
             set { ViewModel.DnsRecord = value; }
         }
 
+        public void FocusHostName()
+        {
+            hostName.Focus();
+        }
+
         public void Complete()
         {
             DialogResult = true;

@@ -46,7 +46,8 @@ namespace AzureDNS.ViewModels
                        RecordType == RecordType.AAAA ||
                        RecordType == RecordType.CNAME ||
                        RecordType == RecordType.MX ||
-                       RecordType == RecordType.TXT;
+                       RecordType == RecordType.TXT ||
+                       (RecordType == RecordType.NS && Name != "@");
             }
         }
     }
