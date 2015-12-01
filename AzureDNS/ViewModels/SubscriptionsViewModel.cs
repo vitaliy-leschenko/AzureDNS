@@ -114,7 +114,7 @@ namespace AzureDNS.ViewModels
                     subscriptions.Add(item);
                 }
 
-                Current = items.FirstOrDefault(t => t.IsCurrent);
+                Current = items.FirstOrDefault();
             }
             finally
             {

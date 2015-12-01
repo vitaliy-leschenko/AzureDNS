@@ -17,7 +17,7 @@ namespace AzureDNS
                     XmlLanguage.GetLanguage(CultureInfo.CurrentCulture.IetfLanguageTag)));
 
             var bootstrapper = new AppBootstrapper(this);
-            bootstrapper.Run();
+            bootstrapper.Run(true);
         }
     }
 }

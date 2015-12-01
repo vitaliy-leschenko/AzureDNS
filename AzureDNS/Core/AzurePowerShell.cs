@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Management.Automation;
 using System.Management.Automation.Runspaces;
 using System.Text;
@@ -33,9 +34,8 @@ namespace AzureDNS.Core
                     {
                         var ps = PowerShell.Create();
                         ps.Runspace = runspace;
-                        ps.AddCommand("Select-AzureSubscription")
-                            .AddParameter("SubscriptionId", subscriptionId)
-                            .AddParameter("Current", true);
+                        ps.AddCommand("Select-AzureRmSubscription")
+                            .AddParameter("SubscriptionId", subscriptionId);
 
                         LogCommand(ps.Commands.Commands);
                         ps.Invoke();
@@ -50,26 +50,32 @@ namespace AzureDNS.Core
                 {
                     lock (runspace)
                     {
-                        var ps = PowerShell.Create();
-                        ps.Runspace = runspace;
-                        ps.AddCommand("Get-AzureSubscription");
-
-                        LogCommand(ps.Commands.Commands);
-                        var items = ps.Invoke();
-
                         var result = new List<SubscriptionViewModel>();
-                        foreach (var o in items)
+                        try
                         {
-                            dynamic item = o.BaseObject;
+                            var ps = PowerShell.Create();
+                            ps.Runspace = runspace;
+                            ps.AddCommand("Get-AzureRmSubscription");
 
-                            var subscription = new SubscriptionViewModel();
-                            subscription.SubscriptionId = new Guid((string)item.SubscriptionId);
-                            subscription.SubscriptionName = item.SubscriptionName;
-                            subscription.IsCurrent = item.IsCurrent;
+                            LogCommand(ps.Commands.Commands);
+                            var items = ps.Invoke();
 
-                            result.Add(subscription);
+                            foreach (var o in items)
+                            {
+                                dynamic item = o.BaseObject;
+
+                                var subscription = new SubscriptionViewModel();
+                                subscription.SubscriptionId = new Guid((string) item.SubscriptionId);
+                                subscription.SubscriptionName = item.SubscriptionName;
+
+                                result.Add(subscription);
+                            }
+
                         }
-
+                        catch (Exception)
+                        {
+                            // ignore
+                        }
                         return result;
                     }
                 });
@@ -83,7 +89,7 @@ namespace AzureDNS.Core
                     lock (runspace)
                     {
                         var pipe = runspace.CreatePipeline();
-                        pipe.Commands.Add(new Command("Get-AzureResourceGroup"));
+                        pipe.Commands.Add(new Command("Get-AzureRmResourceGroup"));
 
                         LogCommand(pipe.Commands);
                         var result = pipe.Invoke();
@@ -108,8 +114,8 @@ namespace AzureDNS.Core
                     lock (runspace)
                     {
                         var pipe = runspace.CreatePipeline();
-                        pipe.Commands.Add(new Command("Get-AzureResourceGroup"));
-                        pipe.Commands.Add(new Command("Get-AzureDnsZone"));
+                        pipe.Commands.Add(new Command("Get-AzureRmResourceGroup"));
+                        pipe.Commands.Add(new Command("Get-AzureRmDnsZone"));
 
                         LogCommand(pipe.Commands);
                         var result = pipe.Invoke();
@@ -144,7 +150,7 @@ namespace AzureDNS.Core
                         {
                             var ps = PowerShell.Create();
                             ps.Runspace = runspace;
-                            ps.AddCommand("Get-AzureDnsRecordSet")
+                            ps.AddCommand("Get-AzureRmDnsRecordSet")
                                 .AddParameter("ResourceGroupName", zone.ResourceGroupName)
                                 .AddParameter("ZoneName", zone.Name);
 
@@ -191,7 +197,7 @@ namespace AzureDNS.Core
                     {
                         var ps = PowerShell.Create();
                         ps.Runspace = runspace;
-                        ps.AddCommand("Add-AzureAccount");
+                        ps.AddCommand("Login-AzureRmAccount");
 
                         LogCommand(ps.Commands.Commands);
 
@@ -207,9 +213,16 @@ namespace AzureDNS.Core
             {
                 var ps = PowerShell.Create();
                 ps.Runspace = runspace;
-                ps.AddCommand("Switch-AzureMode").AddParameter("Name", "AzureResourceManager");
+                ps.AddCommand("Set-ExecutionPolicy")
+                    .AddParameter("ExecutionPolicy", "Unrestricted")
+                    .AddParameter("Scope", "CurrentUser")
+                    .AddParameter("Force");
+                ps.Invoke();
+                ps.Commands.Clear();
 
-                LogCommand(ps.Commands.Commands);
+                ps.AddCommand("Import-Module").AddParameter("Name", "AzureRM.Profile");
+                ps.AddCommand("Import-Module").AddParameter("Name", "AzureRM.Dns");
+                ps.AddCommand("Import-Module").AddParameter("Name", "AzureRM.Resources");
                 ps.Invoke();
             }
         }
@@ -223,7 +236,7 @@ namespace AzureDNS.Core
                     {
                         var pipe = runspace.CreatePipeline();
 
-                        var rs = new Command("Remove-AzureDnsRecordSet");
+                        var rs = new Command("Remove-AzureRmDnsRecordSet");
                         rs.Parameters.Add("Name", record.Name);
                         rs.Parameters.Add("RecordType", record.RecordType.ToString());
                         rs.Parameters.Add("ZoneName", dnsZone.Name);
@@ -250,7 +263,7 @@ namespace AzureDNS.Core
                     {
                         var pipe = runspace.CreatePipeline();
 
-                        var rs = new Command("New-AzureDnsRecordSet");
+                        var rs = new Command("New-AzureRmDnsRecordSet");
                         rs.Parameters.Add("Name", hostName);
                         rs.Parameters.Add("ZoneName", dnsZone.Name);
                         rs.Parameters.Add("ResourceGroupName", dnsZone.ResourceGroupName);
@@ -269,7 +282,7 @@ namespace AzureDNS.Core
 
                         foreach (var record in records)
                         {
-                            var ip = new Command("Add-AzureDnsRecordConfig");
+                            var ip = new Command("Add-AzureRmDnsRecordConfig");
 
                             foreach (var item in record)
                             {
@@ -278,7 +291,7 @@ namespace AzureDNS.Core
 
                             pipe.Commands.Add(ip);
                         }
-                        pipe.Commands.Add(new Command("Set-AzureDnsRecordSet"));
+                        pipe.Commands.Add(new Command("Set-AzureRmDnsRecordSet"));
 
                         LogCommand(pipe.Commands);
                         pipe.Invoke();
@@ -302,7 +315,7 @@ namespace AzureDNS.Core
                     {
                         var ps = PowerShell.Create();
                         ps.Runspace = runspace;
-                        ps.AddCommand("New-AzureDnsZone")
+                        ps.AddCommand("New-AzureRmDnsZone")
                             .AddParameter("Name", zoneName)
                             .AddParameter("ResourceGroupName", resourceGroupName);
 
@@ -354,7 +367,7 @@ namespace AzureDNS.Core
                     {
                         var ps = PowerShell.Create();
                         ps.Runspace = runspace;
-                        ps.AddCommand("Remove-AzureDnsZone")
+                        ps.AddCommand("Remove-AzureRmDnsZone")
                             .AddParameter("Name", zoneName)
                             .AddParameter("ResourceGroupName", resourceGroupName)
                             .AddParameter("Force");
